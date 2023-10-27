@@ -1,1 +1,4 @@
-Flask
+flask
+opencv-python
+tensorflow
+numpy
