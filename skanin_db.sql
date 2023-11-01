@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 31, 2023 at 01:13 PM
+-- Generation Time: Nov 01, 2023 at 12:05 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -61,7 +61,7 @@ CREATE TABLE `rice_stress` (
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
   `username` varchar(32) NOT NULL,
-  `password` varchar(32) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `email` varchar(32) NOT NULL,
   `date_created` timestamp(6) NOT NULL DEFAULT current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -71,7 +71,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `date_created`) VALUES
-(1, 'test', 'test123', 'test@test.com', '0000-00-00 00:00:00.000000');
+(1, 'test', '99320fbdfd039101171b371a43ab5d01cb1f6108', 'test@test.com', '0000-00-00 00:00:00.000000');
 
 --
 -- Indexes for dumped tables
