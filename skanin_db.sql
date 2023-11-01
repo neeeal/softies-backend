@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 01, 2023 at 12:05 PM
+-- Generation Time: Nov 01, 2023 at 04:42 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -71,7 +71,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `date_created`) VALUES
-(1, 'test', '99320fbdfd039101171b371a43ab5d01cb1f6108', 'test@test.com', '0000-00-00 00:00:00.000000');
+(1, 'test', '99320fbdfd039101171b371a43ab5d01cb1f6108', 'test@test.com', '0000-00-00 00:00:00.000000'),
+(7, 'neal', '07f7032ec4e91bef180454f517210a26a2dc5b0f', 'qnbjjmatira@gmail.com', '2023-11-01 15:33:50.597530');
 
 --
 -- Indexes for dumped tables
@@ -115,7 +116,7 @@ ALTER TABLE `rice_stress`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
