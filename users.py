@@ -24,9 +24,46 @@ app.route('/', methods=['GET'])
 def index():
     return jsonify({'status': None})
 
+@app.route('/signup', methods=['POST'])
+def signup():
+    msg = ''
+    # Check if "username" and "password" and "email" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+        # Create variables for easy access
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        # Retrieve the hashed password
+        hash = password + app.secret_key
+        hash = hashlib.sha1(hash.encode())
+        password = hash.hexdigest()
+        # Check if account exists using MySQL
+        with connection.cursor() as cursor:
+            cursor = connection.cursor()
+            cursor.execute(f"SELECT * FROM users WHERE username = '{username}' OR email = '{email}'")
+            # Fetch one record return the result
+            account = cursor.fetchone() 
+            print(account)
+        if account == None:
+            # Account doesnt exist. New account verified
+            with connection.cursor() as cursor:
+                cursor = connection.cursor()
+                cursor.execute(f'''INSERT INTO `users`(`username`, `password`, `email`) 
+                                VALUES ('{username}','{password}','{email}')''')
+            connection.commit()
+            msg = 'Account created succesfully'
+        elif account['email']==email:
+            # Message if email is taken
+            msg = 'Email already taken'
+        elif account['username']==username:
+            # Message if username is taken
+            msg = 'Username already taken'
+        else:
+            msg = 'Unknown error. Contact website administrator'
+    return jsonify({'msg':msg})
+
 @app.route('/login', methods=['POST'])
 def login():
-    # Message if succesfully logged in
     msg = ''
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
@@ -41,13 +78,10 @@ def login():
         # Check if account exists using MySQL
         with connection.cursor() as cursor:
             cursor = connection.cursor()
-            print(username, password)
-            print(type(username), type(password))
             cursor.execute(f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'; ")
             # Fetch one record return the result
             account = cursor.fetchone() 
         # If account exists in accounts table in out database
-            print(account)
         if account:
             # Create session data, we can access this data in other routes
             session['loggedin'] = True
@@ -58,8 +92,6 @@ def login():
         else:
             # Account doesnt exist or username/password incorrect
             msg = 'Incorrect user credentials'
-            # print(account['user_id'], 'now working')
-    # print(session['user_id')
     return jsonify({'msg':msg, 'username':session.get('username'), 'user_id':session.get('user_id')})
 
 
