@@ -26,6 +26,8 @@ def index():
 
 @app.route('/signup', methods=['POST'])
 def signup():
+    # signup route checking that all fields are filled
+    # will add method to continue signup even lesser priority fields are empty
     msg = ''
     # Check if form fields POST requests exist (user submitted form)
     if (request.method == 'POST' and 'username' in request.form and 'password' in request.form 
@@ -72,6 +74,8 @@ def signup():
 
 @app.route('/login', methods=['POST'])
 def login():
+    # login route only using username and password for now
+    # soon add email for login
     msg = 'Error login'
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
@@ -111,6 +115,7 @@ def login():
 
 @app.route('/update_user', methods = ['GET', 'POST'])
 def update_user():
+    # user update with auto fill in initial GET request
     user_id = session.get('user_id')
     username = session.get('username')
     email = session.get('email')
@@ -179,7 +184,7 @@ def update_user():
             # Message if username is taken
             msg = 'Username already taken'
         elif account['contact']==contact:
-            # Message if username is taken
+            # Message if contact is taken
             msg = 'Contact already taken'
         else:
             msg = 'Unknown error. Contact website administrator'
@@ -190,6 +195,7 @@ def update_user():
 
 @app.route("/logout", methods=['GET'])
 def logout():
+    # logout route and release session
     msg = 'User Logged Out'
     session.pop("username", None)
     session.pop("user_id", None)
@@ -198,6 +204,7 @@ def logout():
 
 @app.route("/get_user", methods=["GET"])
 def get_user():
+    # return user credentials from session
     return jsonify({'username':session.get('username'), 'user_id':session.get('user_id'),'loggedin':session.get('loggedin')})
 
 ## Main
