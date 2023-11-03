@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 01, 2023 at 04:42 PM
+-- Generation Time: Nov 03, 2023 at 02:31 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -63,16 +63,19 @@ CREATE TABLE `users` (
   `username` varchar(32) NOT NULL,
   `password` varchar(255) NOT NULL,
   `email` varchar(32) NOT NULL,
-  `date_created` timestamp(6) NOT NULL DEFAULT current_timestamp(6)
+  `date_created` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
+  `first_name` text NOT NULL,
+  `last_name` text NOT NULL,
+  `contact` varchar(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `date_created`) VALUES
-(1, 'test', '99320fbdfd039101171b371a43ab5d01cb1f6108', 'test@test.com', '0000-00-00 00:00:00.000000'),
-(7, 'neal', '07f7032ec4e91bef180454f517210a26a2dc5b0f', 'qnbjjmatira@gmail.com', '2023-11-01 15:33:50.597530');
+INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `date_created`, `first_name`, `last_name`, `contact`) VALUES
+(7, 'neal', '07f7032ec4e91bef180454f517210a26a2dc5b0f', 'qnbjjmatira@gmail.com', '2023-11-01 15:33:50.597530', 'Neal Barton James', 'Matira', '09156855546'),
+(17, 'newest_test', 'f4623cf28741bd0f6e0ecbee29bb060e5ab8092b', 'test@test.com', '2023-11-03 13:27:46.811543', 'test1', 'test2', '09123456782');
 
 --
 -- Indexes for dumped tables
@@ -116,7 +119,7 @@ ALTER TABLE `rice_stress`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
