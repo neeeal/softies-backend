@@ -2,3 +2,4 @@ __pycache__
 flask_session
 assets/rice_crop_stress_classifier_effnetv2_large.h5
 assets/efficientnetv2-s.h5
+trial.ipynb
