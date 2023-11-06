@@ -5,3 +5,5 @@ numpy
 pymysql
 flask-cors
 Flask-Session
+pillow
+python-dotenv
