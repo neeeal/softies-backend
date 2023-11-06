@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 05, 2023 at 11:37 AM
+-- Generation Time: Nov 06, 2023 at 04:07 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -120,8 +120,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `date_created`, `first_name`, `last_name`, `contact`) VALUES
-(17, 'newest_test', 'f4623cf28741bd0f6e0ecbee29bb060e5ab8092b', 'test@test.com', '2023-11-03 13:27:46.811543', 'test1', 'test2', '09123456782'),
-(18, 'cynamon', '137a3c7d6a7efedf767275ab8be86710e398b6a9', 'cyna@mon.com', '2023-11-05 08:31:49.418729', 'Kimberly', 'Pangilinan', '09123456712');
+(20, 'neeeal', '6fba897b4b749579dd0827505f7a3e9f4ac1d49a', 'qnbjjmatira@tip.edu.ph', '2023-11-06 05:03:39.220998', 'Neal Barton James', 'Matira', '09156855546'),
+(21, 'dean', '8b0e638a5914b43fa9836a1e635ebe8f33396e94', 'dean@manalo.com', '2023-11-06 05:26:06.426079', 'None', 'None', 'None'),
+(23, 'tipian', '19b9115dedf9526f9ba3712753a72bd1fc0f5e70', 'tip@tipian.com', '2023-11-06 05:35:17.796559', 'None', 'None', 'None'),
+(24, 'test', '23b6d609f28af993115a5d194ad006cfc335f8c1', 'test@test.com', '2023-11-06 07:23:16.116105', 'tester', 'mytester', '09123456789'),
+(25, 'test1', '23b6d609f28af993115a5d194ad006cfc335f8c1', 'test1@test.com', '2023-11-06 08:15:44.019894', 'tester', 'mytester', '09123456789');
 
 --
 -- Indexes for dumped tables
@@ -165,7 +168,7 @@ ALTER TABLE `rice_stress`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
