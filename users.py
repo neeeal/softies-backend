@@ -3,22 +3,27 @@ from flask import Flask, render_template, redirect, request, jsonify, session
 from pymysql import connect
 from pymysql.cursors import re, DictCursor
 import hashlib
+import dotenv
+import os
+
+# Load the environment variables
+dotenv.load_dotenv()
 
 app = Flask(__name__)
 # Change this to your secret key (it can be anything, it's for extra protection)
-app.secret_key = 'skanin is the best'
+app.secret_key = os.getenv("SECRET_KEY")
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 # session = Session(app)
 # print(session)
 
 # Connect to the database
-connection = connect(host='localhost',
-                             user='root',
-                            #  password='passwd',
-                             database='skanin_db',
-                            #  charset='utf8mb4',
-                             cursorclass=DictCursor)
+connection = connect(host=os.getenv("DATABASE_URL"),
+                    user=os.getenv("USER"),
+                #  password=os.getenv("PASSWORD"),
+                    database=os.getenv("DATABASE_NAME"),
+                #  charset='utf8mb4',
+                    cursorclass=DictCursor)
 
 app.route('/', methods=['GET'])
 def index():
@@ -76,11 +81,17 @@ def signup():
 def login():
     # login route only using username and password for now
     # soon add email for login
-    msg = 'Error login'
+    msg = 'Incorrect user credentials'
     # Check if "username" and "password" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+    if request.method == 'POST' and 'password' in request.form and ('email' in request.form or 
+                                                                    'username' in request.form ):
         # Create variables for easy access
-        username = request.form['username']
+        try:
+            value = request.form['username']
+            key = 'username'
+        except:
+            value = request.form['email']
+            key = 'email'
         password = request.form['password']
         # Retrieve the hashed password
         hash = password + app.secret_key
@@ -90,7 +101,7 @@ def login():
         # Check if account exists using MySQL
         with connection.cursor() as cursor:
             cursor = connection.cursor()
-            cursor.execute(f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'; ")
+            cursor.execute(f"SELECT * FROM users WHERE {key} = '{value}' AND password = '{password}'; ")
             # Fetch one record return the result
             account = cursor.fetchone() 
         # If account exists in accounts table in out database
@@ -108,7 +119,6 @@ def login():
             return jsonify({'msg':msg, 'username':session.get('username'), 'user_id':session.get('user_id')})
         else:
             # Account doesnt exist or username/password incorrect
-            msg = 'Incorrect user credentials'
             return jsonify({'msg':msg})
     return jsonify({'msg':msg})
         
@@ -199,13 +209,20 @@ def logout():
     msg = 'User Logged Out'
     session.pop("username", None)
     session.pop("user_id", None)
+    session.pop("first_name", None)
+    session.pop("last_name", None)
+    session.pop("contact", None)
+    session.pop("email", None)
     session.pop("loggedin", False)
-    return jsonify({'msg':msg})
+    return jsonify({'msg':msg,'loggedin':session.get('loggedin')})
 
 @app.route("/get_user", methods=["GET"])
 def get_user():
     # return user credentials from session
-    return jsonify({'username':session.get('username'), 'user_id':session.get('user_id'),'loggedin':session.get('loggedin')})
+    return jsonify({'username':session.get('username'), 'user_id':session.get('user_id'),
+                    'loggedin':session.get('loggedin'), 'email':session.get('email'),
+                    'first_name':session.get('first_name'), 'last_name':session.get('last_name')
+                    })
 
 ## Main
 if __name__ == '__main__':
