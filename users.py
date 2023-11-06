@@ -5,6 +5,7 @@ from pymysql.cursors import re, DictCursor
 import hashlib
 import dotenv
 import os
+import re
 
 # Load the environment variables
 dotenv.load_dotenv()
@@ -20,9 +21,8 @@ app.config["SESSION_TYPE"] = "filesystem"
 # Connect to the database
 connection = connect(host=os.getenv("DATABASE_URL"),
                     user=os.getenv("USER"),
-                #  password=os.getenv("PASSWORD"),
+                    # password=os.getenv("PASSWORD"),
                     database=os.getenv("DATABASE_NAME"),
-                #  charset='utf8mb4',
                     cursorclass=DictCursor)
 
 app.route('/', methods=['GET'])
@@ -35,16 +35,32 @@ def signup():
     # will add method to continue signup even lesser priority fields are empty
     msg = ''
     # Check if form fields POST requests exist (user submitted form)
-    if (request.method == 'POST' and 'username' in request.form and 'password' in request.form 
-        and 'email' in request.form and 'first_name' in request.form and 'last_name' in request.form
-        and 'contact' in request.form):
+    if (request.method == 'POST' and 'username' in request.form 
+        and 'password' in request.form and 'email' in request.form 
+        # and 'first_name' in request.form and 'last_name' in request.form
+        # and 'contact' in request.form
+        ):
         # Create variables for easy access
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        contact = request.form['contact']
+        
+        ## Password Requirements:
+        ## at least 8 length, one small letter, one big letter
+        ## one number, one special character
+        # if (len(password) > 8 and re.search('[a-z]', password) is not None
+        #     and re.search('[A-Z]', password) is not None
+        #     and ):
+        
+        if 'first_name' in request.form:
+            if request.form['first_name'] != '': first_name = request.form['first_name']
+        else: first_name=None
+        if 'last_name' in request.form:
+            if request.form['last_name'] != '': last_name = request.form['last_name']
+        else: last_name=None
+        if 'contact' in request.form:
+            if request.form['contact'] != '': contact = request.form['contact']
+        else: contact=None
         # Retrieve the hashed password
         hash = password + app.secret_key
         hash = hashlib.sha1(hash.encode())
@@ -52,10 +68,9 @@ def signup():
         # Check if account exists using MySQL
         with connection.cursor() as cursor:
             cursor = connection.cursor()
-            cursor.execute(f"SELECT * FROM users WHERE username = '{username}' OR email = '{email}' OR contact = '{contact}'")
+            cursor.execute(f"SELECT * FROM users WHERE username = '{username}' OR email = '{email}'")
             # Fetch one record return the result
-            account = cursor.fetchone() 
-            print(account)
+            account = cursor.fetchone()
         if account == None:
             # Account doesnt exist. New account verified
             with connection.cursor() as cursor:
@@ -71,7 +86,7 @@ def signup():
             # Message if username is taken
             msg = 'Username already taken'
         elif account['contact']==contact:
-            # Message if username is taken
+            # Message if contact is taken
             msg = 'Contact number already taken'
         else:
             msg = 'Unknown error. Contact website administrator'
@@ -206,15 +221,17 @@ def update_user():
 @app.route("/logout", methods=['GET'])
 def logout():
     # logout route and release session
-    msg = 'User Logged Out'
-    session.pop("username", None)
-    session.pop("user_id", None)
-    session.pop("first_name", None)
-    session.pop("last_name", None)
-    session.pop("contact", None)
-    session.pop("email", None)
-    session.pop("loggedin", False)
-    return jsonify({'msg':msg,'loggedin':session.get('loggedin')})
+    msg = 'No user logged in'
+    if session.get('loggedin') == True:
+        msg = 'User Logged Out'
+        session.pop("username", None)
+        session.pop("user_id", None)
+        session.pop("first_name", None)
+        session.pop("last_name", None)
+        session.pop("contact", None)
+        session.pop("email", None)
+        session.pop("loggedin", False)
+    return jsonify({'msg':msg,'User logged out':session.get('loggedin')})
 
 @app.route("/get_user", methods=["GET"])
 def get_user():
