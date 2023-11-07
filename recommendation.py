@@ -1,10 +1,5 @@
-# from tensorflow.keras.models import load_model
-# import tensorflow_hub as hub
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.efficientnet_v2 import EfficientNetV2L
-from tensorflow.keras.layers import Dense, Flatten, Dropout
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras import Sequential
+from tensorflow.keras.models import load_model
+import tensorflow_hub as hub
 
 from flask import Flask, render_template, redirect, request, jsonify, session
 from pymysql import connect
@@ -12,10 +7,14 @@ from pymysql.cursors import re, DictCursor
 import numpy as np
 import cv2
 from PIL import Image
+import dotenv
+import os
+# Load the environment variables
+dotenv.load_dotenv()
 
 app = Flask(__name__)
 # Change this to your secret key (it can be anything, it's for extra protection)
-app.secret_key = 'skanin is the best'
+app.secret_key = os.getenv("SECRET_KEY")
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 
@@ -30,29 +29,29 @@ connection = connect(host='localhost',
                             #  charset='utf8mb4',
                              cursorclass=DictCursor)
 
-## Model initialization
+# Model initialization
 # Define the function to handle the KerasLayer when loading the model
-# def load_model_with_hub(path):
-#     class KerasLayerWrapper(hub.KerasLayer):
-#         def __init__(self, handle, **kwargs):
-#             super().__init__(handle, **kwargs)
+def load_model_with_hub(path):
+    class KerasLayerWrapper(hub.KerasLayer):
+        def __init__(self, handle, **kwargs):
+            super().__init__(handle, **kwargs)
 
-#     custom_objects = {'KerasLayer': KerasLayerWrapper}
+    custom_objects = {'KerasLayer': KerasLayerWrapper}
 
-#     return load_model(path, custom_objects=custom_objects)
+    return load_model(path, custom_objects=custom_objects)
 
 # Load the model using the defined function
-# model = load_model_with_hub('assets//rice_crop_stress_classifier_effnetv2_large.h5')
-# print(model)
+model = load_model_with_hub('assets//model.h5')
 # def initModel():
 #     ## Model initialization function
 #     # IMG_SHAPE = (image_size,image_size) + (channels,) ## RGB=3
-#     tf_model = load_model('assets\rice_crop_stress_classifier_effnetv2_large.h5')
+#     tf_model = load_model('assets//model.h5')
 #     return tf_model
+# model = initModel()
 
 def preprocessData(data):
     ## Main Preprocessing function for input images 
-    processed_data = cv2.resize(data,(image_size,image_size),cv2.INTER_LINEAR)
+    processed_data = cv2.resize(data,(image_size,image_size)).reshape(1,image_size,image_size,3)
     return processed_data
 
 @app.route('/skan', methods=["POST"])
@@ -60,6 +59,7 @@ def skan():
     if request.method == 'POST' and 'image' in request.files:
         ## Retrieving user_id
         user_id = session.get('user_id')
+        print(user_id)
         ## Prediction route accepting images and outputs prediction of A.I.
         ## Read Image from input and convert to CV2
         image = request.files['image']
@@ -72,8 +72,10 @@ def skan():
         rice_image = data.tobytes()
 
         ## Model prediction
-        print("INSERT HERE")
-        result = '3'
+        result = np.argmax(model.predict(data))+1
+        print(result)
+        # print("INSERT HERE")
+        # result = '3'
             ## End of prediction
 
         ## Getting Recommendation using output from model
@@ -105,4 +107,4 @@ def skan():
 
 
 if __name__ == '__main__':
-    app.run(port=8000)
+    app.run('localhost',port=8000)
