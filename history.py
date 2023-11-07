@@ -5,10 +5,14 @@ import numpy as np
 import cv2
 from PIL import Image
 import io
+import dotenv
+import os
+# Load the environment variables
+dotenv.load_dotenv()
 
 app = Flask(__name__)
 # Change this to your secret key (it can be anything, it's for extra protection)
-app.secret_key = 'skanin is the best'
+app.secret_key = os.getenv("SECRET_KEY")
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 
@@ -69,4 +73,4 @@ def get_image(image_num):
         return str(e)
 
 if __name__ == '__main__':
-    app.run(port=6000)
+    app.run('localhost',port=6000)
