@@ -44,14 +44,6 @@ def signup():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        
-        ## Password Requirements:
-        ## at least 8 length, one small letter, one big letter
-        ## one number, one special character
-        # if (len(password) > 8 and re.search('[a-z]', password) is not None
-        #     and re.search('[A-Z]', password) is not None
-        #     and ):
-        
         if 'first_name' in request.form:
             if request.form['first_name'] != '': first_name = request.form['first_name']
         else: first_name=None
@@ -61,6 +53,28 @@ def signup():
         if 'contact' in request.form:
             if request.form['contact'] != '': contact = request.form['contact']
         else: contact=None
+        flag = 0 ## checker if error occured
+        
+        ## Password Requirements:
+        ## at least 8 length, one small letter, one big letter
+        ## one number, one special character
+        if len(password) < 8 : msg += "Password must be at least 8 characters."; flag = 1
+        if re.search('[a-z]', password) is None:msg += "Password must contain at least 1 small character.";flag = 1
+        if re.search('[A-Z]', password) is None:msg += "Password must contain at least 1 big character.";flag = 1
+        if re.search('[0-9]', password) is None:msg += "Password must contain at least 1 number.";flag = 1
+        if re.compile('[@_!#$%^&*()<>?/\|}{~:]').search(password) is None: msg = "Password must contain at least one special character";flag = 1
+
+        ## Username Checking
+        if len(username) < 3: msg += "Username must be at least 3 characters"; flag = 1
+        
+        ## Contact Checking
+        if contact != None and len(contact) != 11: msg += "Contact must be 11 digits"; flag = 1
+        ## Check if error occured
+        if flag == 1: 
+            return jsonify({"msg":msg})
+        
+        
+        
         # Retrieve the hashed password
         hash = password + app.secret_key
         hash = hashlib.sha1(hash.encode())
