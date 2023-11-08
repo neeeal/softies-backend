@@ -97,7 +97,7 @@ def skan():
             # print("working")
             sql = "INSERT INTO `history` (`user_id`, `stress_id`, `rice_image`, `image_name`) VALUES (%s, %s, %s, %s)"
             cursor.execute(sql, (user_id, stress_id, rice_image, image_name))
-            connection.commit()
+        connection.commit()
         
         return jsonify({'msg':msg, 'stress_name':stress_name, stress_type:'stress_type',
                         'stress_level':stress_level, 'description':description, 'description_src':description_src,
