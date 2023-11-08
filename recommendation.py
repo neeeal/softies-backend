@@ -64,6 +64,10 @@ def skan():
         ## Read Image from input and convert to CV2
         image = request.files['image']
         image_name=image.filename
+        ## Checking file name if jpg jpeg or png
+        if image_name.split('.')[-1] not in ["jpeg", "png", "jpg"]:
+            msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
+            return jsonify({"msg":msg})
         pil_image = Image.open(image.stream).convert('RGB') 
         data = np.array(pil_image)
         data = preprocessData(data)
