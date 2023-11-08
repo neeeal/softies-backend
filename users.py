@@ -58,21 +58,21 @@ def signup():
         ## Password Requirements:
         ## at least 8 length, one small letter, one big letter
         ## one number, one special character
-        if len(password) < 8 : msg += "Password must be at least 8 characters."; flag = 1
-        if re.search('[a-z]', password) is None:msg += "Password must contain at least 1 small character.";flag = 1
-        if re.search('[A-Z]', password) is None:msg += "Password must contain at least 1 big character.";flag = 1
-        if re.search('[0-9]', password) is None:msg += "Password must contain at least 1 number.";flag = 1
-        if re.compile('[@_!#$%^&*()<>?/\|}{~:]').search(password) is None: msg = "Password must contain at least one special character.";flag = 1
+        if len(password) < 8 : msg += "Password must be at least 8 characters. "; flag = 1
+        if re.search('[a-z]', password) is None:msg += "Password must contain at least 1 small character. ";flag = 1
+        if re.search('[A-Z]', password) is None:msg += "Password must contain at least 1 big character. ";flag = 1
+        if re.search('[0-9]', password) is None:msg += "Password must contain at least 1 number. ";flag = 1
+        if re.compile('[@_!#$%^&*()<>?/\|}{~:]').search(password) is None: msg = "Password must contain at least one special character. ";flag = 1
 
         ## Username Checking
-        if len(username) < 3: msg += "Username must be at least 3 characters."; flag = 1
+        if len(username) < 3: msg += "Username must be at least 3 characters. "; flag = 1
         
         ## Contact Checking
-        if contact != None and len(contact) != 11: msg += "Contact must be 11 digits."; flag = 1
+        if contact != None and len(contact) != 11: msg += "Contact must be 11 digits. "; flag = 1
         
         ## Email Checking
         if ("@" in email and "." in email.split("@")[1]) == False:
-            msg += "Email must be a valid email address"; flag = 1
+            msg += "Email must be a valid email address. "; flag = 1
             
         
         ## Check if error occured
@@ -168,7 +168,9 @@ def update_user():
     last_name = session.get('last_name')
     contact = session.get('contact')
     if request.method == 'GET':
-        return jsonify({'username':username, 
+        msg = 'Autofill information'
+        return jsonify({'msg':msg,
+                        'username':username, 
                         'user_id':user_id, 
                         'email':email,
                         'first_name':first_name,
@@ -178,23 +180,62 @@ def update_user():
     # Check if form fields POST requests exist (user submitted form)
     elif (request.method == 'POST' and 'password' in request.form):
         # Create variables for easy access
-        if request.form['username'] != '': username = request.form['username']
-        if request.form['email'] != '': email = request.form['email']
-        if request.form['first_name'] != '': first_name = request.form['first_name']
-        if request.form['last_name'] != '': last_name = request.form['last_name']
-        if request.form['contact'] != '': contact = request.form['contact']
-
         password = request.form['password']
-        # Retrieve the hashed password
+        if "username" in request.form and request.form['username'] != '': new_username = request.form['username']
+        else: new_username = username
+        if "email" in request.form and request.form['email'] != '': new_email = request.form['email']
+        else: new_email = email
+        if "first_name" in request.form and request.form['first_name'] != '': new_first_name = request.form['first_name']
+        else: new_first_name = first_name
+        if "last_name" in request.form and request.form['last_name'] != '': new_last_name = request.form['last_name']
+        else: new_last_name = new_last_name
+        if "contact" in request.form and request.form['contact'] != '': new_contact = request.form['contact']
+        else: new_contact = contact
+        if "new_password" in request.form and request.form['new_password'] != '': 
+            new_password = request.form['new_password']
+        else: new_password = password
+        
+        flag = 0 ## checker if error occured
+        
+        ## Password Requirements:
+        ## at least 8 length, one small letter, one big letter
+        ## one number, one special character
+        if len(new_password) < 8 : msg += "Password must be at least 8 characters. "; flag = 1
+        if re.search('[a-z]', new_password) is None:msg += "Password must contain at least 1 small character. ";flag = 1
+        if re.search('[A-Z]', new_password) is None:msg += "Password must contain at least 1 big character. ";flag = 1
+        if re.search('[0-9]', new_password) is None:msg += "Password must contain at least 1 number. ";flag = 1
+        if re.compile('[@_!#$%^&*()<>?/\|}{~:]').search(new_password) is None: msg = "Password must contain at least one special character. ";flag = 1
+
+        ## Username Checking
+        if len(username) < 3: msg += "Username must be at least 3 characters. "; flag = 1
+        
+        ## Contact Checking
+        if contact != None and len(contact) != 11: msg += "Contact must be 11 digits. "; flag = 1
+        
+        ## Email Checking
+        if ("@" in email and "." in email.split("@")[1]) == False:
+            msg += "Email must be a valid email address. "; flag = 1
+            
+        
+        ## Check if error occured
+        if flag == 1: 
+            return jsonify({"msg":msg})
+        
+        # Hash old and new password
         hash = password + app.secret_key
         hash = hashlib.sha1(hash.encode())
         password = hash.hexdigest()
+        
+        hash = new_password + app.secret_key
+        hash = hashlib.sha1(hash.encode())
+        new_password = hash.hexdigest()
         # Check if account exists using MySQL
         with connection.cursor() as cursor:
             cursor = connection.cursor()
-            cursor.execute(f"SELECT * FROM users WHERE user_id != '{user_id}' AND (username = '{username}' OR email = '{email}' OR contact = '{contact}')") #cursor.execute(f"SELECT * FROM users WHERE user_id = '{session.get('user_id')}'")
+            cursor.execute(f"SELECT * FROM users WHERE user_id != '{user_id}' AND (username = '{username}' OR email = '{email}')") #cursor.execute(f"SELECT * FROM users WHERE user_id = '{session.get('user_id')}'")
             # Fetch one record return the result
             account = cursor.fetchone() 
+        connection.commit()
         if account == None:
             # Account doesnt exist. Update account verified
             with connection.cursor() as cursor:
@@ -207,28 +248,27 @@ def update_user():
                     msg = 'Incorrect old password'
                     return jsonify({'msg':msg})
                 
-            if request.form['new_password'] != '': 
-                new_password = request.form['new_password']
-                hash = new_password + app.secret_key
-                hash = hashlib.sha1(hash.encode())
-                new_password = hash.hexdigest()
-            else: new_password = password
             with connection.cursor() as cursor:
                 cursor = connection.cursor()
-                cursor.execute(f'''UPDATE `users` SET `username`='{username}', `email`='{email}',
-                               `first_name`='{first_name}', `last_name`='{last_name}',
-                               `contact`='{contact}', `password`='{new_password}' 
+                cursor.execute(f'''UPDATE `users` SET `username`='{new_username}', `email`='{new_email}',
+                               `first_name`='{new_first_name}', `last_name`='{new_last_name}',
+                               `contact`='{new_contact}', `password`='{new_password}' 
                                WHERE `user_id` = '{user_id}'
                                ''')
             connection.commit()
+            session['username'] = new_username
+            session['first_name'] = new_first_name
+            session['last_name'] = new_last_name
+            session['contact'] = new_contact
+            session['email'] = new_email
             msg = 'Account updated'
-        elif account['email']==email:
+        elif account['email']==email and email != new_email:
             # Message if email is taken
             msg = 'Email already taken'
-        elif account['username']==username:
+        elif account['username']==username and username != new_username:
             # Message if username is taken
             msg = 'Username already taken'
-        elif account['contact']==contact:
+        elif account['contact']==contact and contact != new_contact:
             # Message if contact is taken
             msg = 'Contact already taken'
         else:
@@ -266,6 +306,11 @@ def get_user():
                         'first_name':session.get('first_name'), 'last_name':session.get('last_name')
                         })
     return jsonify({'msg':msg})
+
+## ADD forget_password FUNCTION AND ROUTE
+##
+##
+##
 
 ## Main
 if __name__ == '__main__':
