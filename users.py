@@ -158,7 +158,7 @@ def login():
     return jsonify({'msg':msg})
         
 
-@app.route('/update_user', methods = ['GET', 'POST'])
+@app.route('/update_user', methods = ['GET', 'PUT'])
 def update_user():
     # user update with auto fill in initial GET request
     user_id = session.get('user_id')
@@ -178,7 +178,7 @@ def update_user():
                         'contact':contact,
                         })
     # Check if form fields POST requests exist (user submitted form)
-    elif (request.method == 'POST' and 'password' in request.form):
+    elif (request.method == 'PUT' and 'password' in request.form):
         # Create variables for easy access
         password = request.form['password']
         if "username" in request.form and request.form['username'] != '': new_username = request.form['username']
