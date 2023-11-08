@@ -62,13 +62,19 @@ def signup():
         if re.search('[a-z]', password) is None:msg += "Password must contain at least 1 small character.";flag = 1
         if re.search('[A-Z]', password) is None:msg += "Password must contain at least 1 big character.";flag = 1
         if re.search('[0-9]', password) is None:msg += "Password must contain at least 1 number.";flag = 1
-        if re.compile('[@_!#$%^&*()<>?/\|}{~:]').search(password) is None: msg = "Password must contain at least one special character";flag = 1
+        if re.compile('[@_!#$%^&*()<>?/\|}{~:]').search(password) is None: msg = "Password must contain at least one special character.";flag = 1
 
         ## Username Checking
-        if len(username) < 3: msg += "Username must be at least 3 characters"; flag = 1
+        if len(username) < 3: msg += "Username must be at least 3 characters."; flag = 1
         
         ## Contact Checking
-        if contact != None and len(contact) != 11: msg += "Contact must be 11 digits"; flag = 1
+        if contact != None and len(contact) != 11: msg += "Contact must be 11 digits."; flag = 1
+        
+        ## Email Checking
+        if ("@" in email and "." in email.split("@")[1]) == False:
+            msg += "Email must be a valid email address"; flag = 1
+            
+        
         ## Check if error occured
         if flag == 1: 
             return jsonify({"msg":msg})
