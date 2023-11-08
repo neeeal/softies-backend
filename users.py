@@ -218,28 +218,34 @@ def update_user():
 
     return jsonify({'msg':msg})
 
-@app.route("/logout", methods=['GET'])
+@app.route("/logout", methods=['POST'])
 def logout():
     # logout route and release session
-    msg = 'No user logged in'
-    if session.get('loggedin') == True:
-        msg = 'User Logged Out'
-        session.pop("username", None)
-        session.pop("user_id", None)
-        session.pop("first_name", None)
-        session.pop("last_name", None)
-        session.pop("contact", None)
-        session.pop("email", None)
-        session.pop("loggedin", False)
-    return jsonify({'msg':msg,'User logged out':session.get('loggedin')})
+    msg = ''
+    if request.method == 'POST':
+        msg = 'No user logged in'
+        if session.get('loggedin') == True:
+            msg = 'User Logged Out'
+            session.pop("username", None)
+            session.pop("user_id", None)
+            session.pop("first_name", None)
+            session.pop("last_name", None)
+            session.pop("contact", None)
+            session.pop("email", None)
+            session.pop("loggedin", False)
+    return jsonify({'msg':msg})
 
 @app.route("/get_user", methods=["GET"])
 def get_user():
+    msg = ''
     # return user credentials from session
-    return jsonify({'username':session.get('username'), 'user_id':session.get('user_id'),
-                    'loggedin':session.get('loggedin'), 'email':session.get('email'),
-                    'first_name':session.get('first_name'), 'last_name':session.get('last_name')
-                    })
+    if request.method == 'GET':
+        msg = 'Current user retrieved'
+        return jsonify({'msg':msg,'username':session.get('username'), 'user_id':session.get('user_id'),
+                        'loggedin':session.get('loggedin'), 'email':session.get('email'),
+                        'first_name':session.get('first_name'), 'last_name':session.get('last_name')
+                        })
+    return jsonify({'msg':msg})
 
 ## Main
 if __name__ == '__main__':
