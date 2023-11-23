@@ -1,0 +1,5 @@
+Best Epoch: 19 
+Final Train Loss: 0.1304
+Final Validation Loss: 0.1188
+Final Train accuracy: 95.65%
+Final Test accuracy: 96.52%
