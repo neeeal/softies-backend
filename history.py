@@ -33,6 +33,7 @@ def get_history():
         with connection.cursor() as cursor:
             cursor.execute(f"SELECT * FROM `history` WHERE `user_id` = {user_id} LIMIT 6")
             data = cursor.fetchall()
+        connection.commit()
         
         ## Formatting retrieved data
         history={}
@@ -56,6 +57,7 @@ def get_image(image_num):
         with connection.cursor() as cursor:
             cursor.execute("SELECT rice_image FROM history WHERE user_id = %s LIMIT 6", (user_id,))
             image_data = cursor.fetchall()[image_num]
+        connection.commit()
 
         if image_data:
             # Convert image bytes to numpy array

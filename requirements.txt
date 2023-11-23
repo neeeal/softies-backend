@@ -8,3 +8,8 @@ flask-cors
 Flask-Session
 pillow
 python-dotenv
+tensorflow_hub
+rembg
+opencv-python
+numpy==1.23.5
+numba
