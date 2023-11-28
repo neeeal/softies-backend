@@ -9,7 +9,6 @@ import dotenv
 import hashlib
 import os
 from tensorflow.keras.models import load_model
-import tensorflow_hub as hub
 from tensorflow.keras.preprocessing import image
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, \
                                unset_jwt_cookies, jwt_required, JWTManager
@@ -146,10 +145,10 @@ def skan():
         global model
         if model == None:
             model = load_model('model.h5')
-        result = np.argmax(model(data))+1
-        print(result)
+        # result = np.argmax(model(data))+1
+        # print(result)
         # print("INSERT HERE")
-        # result = '3'
+        result = '3'
             ## End of prediction
 
         ## Getting Recommendation using output from model
