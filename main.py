@@ -490,4 +490,8 @@ def create_token():
 ############### END OF USERS API ###############
 
 if __name__ == '__main__':
-    app.run('localhost',port=8000, debug=True)
+    app.run(
+        # 'localhost',
+        port=8000, 
+        # debug=True
+        )
