@@ -13,6 +13,7 @@ import tensorflow_hub as hub
 from tensorflow.keras.preprocessing import image
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, \
                                unset_jwt_cookies, jwt_required, JWTManager
+from flask_cors import CORS 
 
 # Load the environment variables
 dotenv.load_dotenv()
@@ -22,6 +23,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+CORS(app) 
 
 
 # Connect to the database
@@ -492,6 +494,6 @@ def create_token():
 if __name__ == '__main__':
     app.run(
         # 'localhost',
-        port=8000, 
+        port=os.getenv("PORT", default=8000)
         # debug=True
         )
