@@ -25,7 +25,7 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 CORS(app) 
 jwt = JWTManager(app)
-# model = None
+model = None
 
 # Connect to the database
 connection = connect(host=os.getenv("DATABASE_URL"),
@@ -107,7 +107,7 @@ def load_classifier():
     # pre-trained on ImageNet and provided by Keras, but you can
     # substitute in your own networks just as easily)
     global model
-    model = load_model('model/model.h5')
+    model = load_model('model.h5')
     return model
 
 def preprocessData(data, image_size = 384):
@@ -141,7 +141,9 @@ def skan():
 
         ## Model prediction
         data = preprocessData(data)
-        model = load_classifier()
+        global model
+        if model == None:
+            model = load_classifier()
         result = np.argmax(model(data))+1
         print(result)
         # print("INSERT HERE")
@@ -487,6 +489,7 @@ def create_token():
 ############### END OF USERS API ###############
 
 if __name__ == '__main__':
+    model = load_classifier()
     app.run(
         # 'localhost',
         port=os.getenv("PORT", default=8000)
