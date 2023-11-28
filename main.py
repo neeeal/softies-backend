@@ -101,14 +101,6 @@ def get_image(image_num):
 
 ############### RECOMMENDATION API ###############
 
-# Model initialization
-def load_classifier():
-    # load the pre-trained Keras model (here we are using a model
-    # pre-trained on ImageNet and provided by Keras, but you can
-    # substitute in your own networks just as easily)
-    global model
-    model = load_model('model/model.h5')
-
 def preprocessData(data, image_size = 384):
     ## Main Preprocessing function for input images 
     img = cv2.resize(data,(image_size,image_size))
@@ -485,7 +477,7 @@ def create_token():
 ############### END OF USERS API ###############
 
 if __name__ == '__main__':
-    load_classifier()
+    model = load_model('model/model.h5')
     app.run(
         # 'localhost',
         port=os.getenv("PORT", default=8000)
