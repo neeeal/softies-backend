@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,jsonify
 from routes.history import history_bp
 from routes.recommendation import recommendation_bp
 from routes.users import users_bp
@@ -16,7 +16,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 @app.route('/api')
 def index():
-    return Flask.jsonify({'status': 200, 'msg':'skanin API is now online'})
+    return jsonify({'status': 200, 'msg':'skanin API is now online'})
 
 # Register blueprints
 app.register_blueprint(history_bp, url_prefix='/api/history')
