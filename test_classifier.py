@@ -1,11 +1,7 @@
 import tensorflow as tf
-
-import h5py
 import numpy as np
 import cv2
-import os
-model=None
-
+model = tf.keras.models.load_model('model.h5')
 # def test_load_model():
 #     # Load the HDF5 data
 #     f = h5py.File('model/model.h5', 'r')
@@ -50,8 +46,6 @@ model=None
 #     assert model
 
 def test_load_model():
-    global model
-    model = tf.keras.models.load_model('model/model.h5')
     assert model
 
 
