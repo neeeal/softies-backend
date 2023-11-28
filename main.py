@@ -24,7 +24,7 @@ app.secret_key = os.getenv("SECRET_KEY")
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 CORS(app) 
-
+jwt = JWTManager(app)
 
 # Connect to the database
 connection = connect(host=os.getenv("DATABASE_URL"),
@@ -101,18 +101,19 @@ def get_image(image_num):
 ############### RECOMMENDATION API ###############
 
 # Model initialization
-# Define the function to handle the KerasLayer when loading the model
-def load_model_with_hub(path):
-    class KerasLayerWrapper(hub.KerasLayer):
-        def __init__(self, handle, **kwargs):
-            super().__init__(handle, **kwargs)
+# # Define the function to handle the KerasLayer when loading the model
+# def load_model_with_hub(path):
+#     class KerasLayerWrapper(hub.KerasLayer):
+#         def __init__(self, handle, **kwargs):
+#             super().__init__(handle, **kwargs)
 
-    custom_objects = {'KerasLayer': KerasLayerWrapper}
+#     custom_objects = {'KerasLayer': KerasLayerWrapper}
 
-    return load_model(path, custom_objects=custom_objects)
+#     return load_model(path, custom_objects=custom_objects)
 
-# Load the model using the defined function
-model = load_model_with_hub('model/model.h5')
+# # Load the model using the defined function
+# model = load_model_with_hub('model/model.h5')
+model = load_model('model/model.h5')
 
 def preprocessData(data, image_size = 384):
     ## Main Preprocessing function for input images 
@@ -186,8 +187,6 @@ def skan():
 
 
 ############### USERS API ###############
-
-jwt = JWTManager(app)
 
 @app.route('/')
 def index():
