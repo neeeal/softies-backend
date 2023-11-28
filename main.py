@@ -112,7 +112,7 @@ def load_model_with_hub(path):
     return load_model(path, custom_objects=custom_objects)
 
 # Load the model using the defined function
-model = load_model_with_hub('model//model.h5')
+# model = load_model_with_hub('model//model.h5')
 
 def preprocessData(data, image_size = 384):
     ## Main Preprocessing function for input images 
@@ -144,9 +144,10 @@ def skan():
         rice_image = data.tobytes()
 
         ## Model prediction
-        data = preprocessData(data)
-        result = np.argmax(model(data))+1
-        print(result)
+        result = '3'
+        # data = preprocessData(data)
+        # result = np.argmax(model(data))+1
+        # print(result)
         # print("INSERT HERE")
         # result = '3'
             ## End of prediction
