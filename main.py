@@ -17,7 +17,7 @@ from flask_cors import CORS
 
 # Load the environment variables
 dotenv.load_dotenv()
-model = load_model('model/model.h5')
+
 app = Flask(__name__)
 # Change this to your secret key (it can be anything, it's for extra protection)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -100,6 +100,14 @@ def get_image(image_num):
 
 ############### RECOMMENDATION API ###############
 
+# Model initialization
+def load_classifier():
+    # load the pre-trained Keras model (here we are using a model
+    # pre-trained on ImageNet and provided by Keras, but you can
+    # substitute in your own networks just as easily)
+    global model
+    model = load_model('model/model.h5')
+
 def preprocessData(data, image_size = 384):
     ## Main Preprocessing function for input images 
     img = cv2.resize(data,(image_size,image_size))
@@ -109,7 +117,7 @@ def preprocessData(data, image_size = 384):
     return img_array
 
 @app.route('/skan', methods=["POST"])
-def skan():
+def skan(model=model):
     if request.method == 'POST' and 'image' in request.files:
         ## Retrieving user_id
         user_id = session.get('user_id')
