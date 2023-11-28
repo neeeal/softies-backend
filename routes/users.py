@@ -30,10 +30,6 @@ connection = connect(host=os.getenv("DATABASE_URL"),
                     )
 
 
-@users_bp.route('/')
-def index():
-    return jsonify({'status': 200})
-
 @users_bp.route('/signup', methods=['POST'])
 def signup():
     # signup route checking that all fields are filled

@@ -14,6 +14,10 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 # jwt = JWTManager(app)
 
+@app.route('/api')
+def index():
+    return Flask.jsonify({'status': 200, 'msg':'skanin API is now online'})
+
 # Register blueprints
 app.register_blueprint(history_bp, url_prefix='/api/history')
 app.register_blueprint(recommendation_bp, url_prefix='/api/recommendation')

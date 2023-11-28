@@ -58,7 +58,7 @@ def get_image(image_num):
         user_id = session.get('user_id')
         connection.ping(reconnect=True)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s LIMIT 6", (user_id,))
+            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s", (user_id,))
             image_data = cursor.fetchall()[image_num]
         connection.commit()
 
