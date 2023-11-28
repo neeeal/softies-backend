@@ -40,6 +40,9 @@ jobs:
     - name: Print Working Directory
       run: |
         pwd
+    - name: Print Directory Contents
+      run: |
+        ls
     - name: Test with pytest
       run: |
         pytest --verbose
