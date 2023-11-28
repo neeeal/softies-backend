@@ -107,7 +107,9 @@ def load_classifier():
     # pre-trained on ImageNet and provided by Keras, but you can
     # substitute in your own networks just as easily)
     global model
-    model = load_model('model.h5')
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(current_directory, 'model.h5')
+    model = load_model(model_path)
     return model
 
 def preprocessData(data, image_size = 384):

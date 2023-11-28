@@ -1,7 +1,11 @@
 import tensorflow as tf
 import numpy as np
 import cv2
-model = tf.keras.models.load_model('model.h5')
+import os
+
+current_directory = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_directory, 'model.h5')
+model = tf.keras.models.load_model(model_path)
 # def test_load_model():
 #     # Load the HDF5 data
 #     f = h5py.File('model/model.h5', 'r')
