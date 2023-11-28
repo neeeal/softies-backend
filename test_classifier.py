@@ -1,11 +1,12 @@
 import tensorflow as tf
+from tensorflow.keras.models import load_model
 import numpy as np
 import cv2
 import os
 
-current_directory = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(current_directory, 'model.h5')
-model = tf.keras.models.load_model(model_path)
+# current_directory = os.path.dirname(os.path.abspath(__file__))
+# model_path = os.path.join(current_directory, 'model.h5')
+# model = tf.keras.models.load_model(model_path)
 # def test_load_model():
 #     # Load the HDF5 data
 #     f = h5py.File('model/model.h5', 'r')
@@ -50,10 +51,12 @@ model = tf.keras.models.load_model(model_path)
 #     assert model
 
 def test_load_model():
+    model = load_model('model.h5')
     assert model
 
 
 def test_classification_1():
+    model = load_model('model.h5')
     image = np.array(cv2.imread('assets/brownhopper.png'))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (384,384))
@@ -62,6 +65,7 @@ def test_classification_1():
     output = np.argmax(classification)+1
     assert output == 1	
 def test_classification_2():
+    model = load_model('model.h5')
     image = np.array(cv2.imread('assets/false_smut.png'))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (384,384))
@@ -70,6 +74,7 @@ def test_classification_2():
     output = np.argmax(classification)+1
     assert output == 2 	
 def test_classification_3():
+    model = load_model('model.h5')
     image = np.array(cv2.imread('assets/greenhopper.png'))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (384,384))
@@ -78,6 +83,7 @@ def test_classification_3():
     output = np.argmax(classification)+1
     assert output == 3	
 def test_classification_4():
+    model = load_model('model.h5')
     image = np.array(cv2.imread('assets/healthy.png'))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (384,384))
@@ -86,6 +92,7 @@ def test_classification_4():
     output = np.argmax(classification)+1
     assert output == 4	
 def test_classification_5():
+    model = load_model('model.h5')
     image = np.array(cv2.imread('assets/blast.png'))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (384,384))
@@ -94,6 +101,7 @@ def test_classification_5():
     output = np.argmax(classification)+1
     assert output == 5 	
 def test_classification_6():
+    model = load_model('model.h5')
     image = np.array(cv2.imread('assets/Sheath_blight (39).png'))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (384,384))
@@ -102,6 +110,7 @@ def test_classification_6():
     output = np.argmax(classification)+1
     assert output == 6 	
 def test_classification_7():
+    model = load_model('model.h5')
     image = np.array(cv2.imread('assets/stemborer.png'))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (384,384))
@@ -110,6 +119,7 @@ def test_classification_7():
     output = np.argmax(classification)+1
     assert output == 7 	
 def test_classification_8():
+    model = load_model('model.h5')
     image = np.array(cv2.imread('assets/tungro.jpg'))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (384,384))
@@ -118,6 +128,7 @@ def test_classification_8():
     output = np.argmax(classification)+1
     assert output == 8 	
 def test_classification_9():
+    model = load_model('model.h5')
     image = np.array(cv2.imread('assets/yellowstemborer.png'))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (384,384))
@@ -126,6 +137,7 @@ def test_classification_9():
     output = np.argmax(classification)+1
     assert output == 9	
 def test_classification_10():
+    model = load_model('model.h5')
     image = np.array(cv2.imread('assets/BLB (14).png'))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (384,384))

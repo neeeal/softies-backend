@@ -145,7 +145,7 @@ def skan():
         data = preprocessData(data)
         global model
         if model == None:
-            model = load_classifier()
+            model = load_model('model.h5')
         result = np.argmax(model(data))+1
         print(result)
         # print("INSERT HERE")
