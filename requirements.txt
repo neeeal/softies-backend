@@ -1,6 +1,6 @@
 flask
 Flask
-opencv-python
+opencv-python-headless
 tensorflow
 numpy
 pymysql
@@ -10,7 +10,6 @@ pillow
 python-dotenv
 tensorflow_hub
 rembg
-opencv-python
 pytest
 numpy==1.23.5
 numba
