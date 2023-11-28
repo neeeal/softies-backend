@@ -13,7 +13,7 @@ tensorflow_hub
 rembg
 opencv-python
 numpy==1.23.5
-numba
+# numba
 flask-jwt-extended
 click==7.1.2
 Flask==1.1.2
