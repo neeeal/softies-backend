@@ -1,5 +1,4 @@
 from tensorflow.keras.models import load_model
-import tensorflow_hub as hub
 from tensorflow.keras.preprocessing import image
 from flask import Flask, render_template, redirect, request, jsonify, session, Blueprint
 from pymysql import connect
@@ -67,7 +66,7 @@ def skan():
         ## Model prediction
         global model
         if model == None:
-            model = load_model('model.h5')
+            model = load_model('model_text.h5')
         # data = preprocessData(data)
         # result = np.argmax(model(data))+1
         # print(result)
