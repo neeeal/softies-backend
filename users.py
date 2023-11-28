@@ -6,6 +6,8 @@ import hashlib
 import dotenv
 import os
 import re
+from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
+                               unset_jwt_cookies, jwt_required, JWTManager
 
 # Load the environment variables
 dotenv.load_dotenv()
@@ -21,13 +23,17 @@ app.config["SESSION_TYPE"] = "filesystem"
 # Connect to the database
 connection = connect(host=os.getenv("DATABASE_URL"),
                     user=os.getenv("USER"),
-                    # password=os.getenv("PASSWORD"),
+                    password=os.getenv("PASSWORD"),
                     database=os.getenv("DATABASE_NAME"),
-                    cursorclass=DictCursor)
+                    cursorclass=DictCursor,
+                    # port=int(os.getenv("DATABASE_PORT"))
+                    )
 
-app.route('/', methods=['GET'])
+jwt = JWTManager(app)
+
+@app.route('/')
 def index():
-    return jsonify({'status': None})
+    return jsonify({'status': 200})
 
 @app.route('/signup', methods=['POST'])
 def signup():
@@ -62,7 +68,7 @@ def signup():
         if re.search('[a-z]', password) is None:msg += "Password must contain at least 1 small character. ";flag = 1
         if re.search('[A-Z]', password) is None:msg += "Password must contain at least 1 big character. ";flag = 1
         if re.search('[0-9]', password) is None:msg += "Password must contain at least 1 number. ";flag = 1
-        if re.compile('[@_!#$%^&*()<>?/\|}{~:]').search(password) is None: msg = "Password must contain at least one special character. ";flag = 1
+        if re.compile("[@_!#$%^&*()<>?/|}{~:]").search(password) is None: msg = "Password must contain at least one special character. ";flag = 1
 
         ## Username Checking
         if len(username) < 3: msg += "Username must be at least 3 characters. "; flag = 1
@@ -86,6 +92,7 @@ def signup():
         hash = hashlib.sha1(hash.encode())
         password = hash.hexdigest()
         # Check if account exists using MySQL
+        connection.ping(reconnect=True)
         with connection.cursor() as cursor:
             cursor = connection.cursor()
             cursor.execute(f"SELECT * FROM users WHERE username = '{username}' OR email = '{email}'")
@@ -134,6 +141,7 @@ def login():
         password = hash.hexdigest()
         
         # Check if account exists using MySQL
+        connection.ping(reconnect=True)
         with connection.cursor() as cursor:
             cursor = connection.cursor()
             cursor.execute(f"SELECT * FROM users WHERE {key} = '{value}' AND password = '{password}'; ")
@@ -230,6 +238,7 @@ def update_user():
         hash = hashlib.sha1(hash.encode())
         new_password = hash.hexdigest()
         # Check if account exists using MySQL
+        connection.ping(reconnect=True)
         with connection.cursor() as cursor:
             cursor = connection.cursor()
             cursor.execute(f"SELECT * FROM users WHERE user_id != '{user_id}' AND (username = '{username}' OR email = '{email}')") #cursor.execute(f"SELECT * FROM users WHERE user_id = '{session.get('user_id')}'")
@@ -307,6 +316,16 @@ def get_user():
                         })
     return jsonify({'msg':msg})
 
+@app.route('/token', methods=["POST"])
+def create_token():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+    if email != "test" or password != "test":
+        return {"msg": "Wrong email or password"}, 401
+
+    access_token = create_access_token(identity=email)
+    response = {"access_token":access_token}
+    return response
 ## ADD forget_password FUNCTION AND ROUTE
 ##
 ##
@@ -314,4 +333,4 @@ def get_user():
 
 ## Main
 if __name__ == '__main__':
-    app.run(host='localhost',port=8080)
+    app.run(host='localhost',port=8080, debug=True)

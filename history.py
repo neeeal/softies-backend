@@ -18,18 +18,20 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 
 # Connect to the database
-connection = connect(host='localhost',
-                             user='root',
-                            #  password='passwd',
-                             database='skanin_db',
-                            #  charset='utf8mb4',
-                             cursorclass=DictCursor)
+connection = connect(host=os.getenv("DATABASE_URL"),
+                    user=os.getenv("USER"),
+                    password=os.getenv("PASSWORD"),
+                    database=os.getenv("DATABASE_NAME"),
+                    cursorclass=DictCursor,
+                    # port=int(os.getenv("DATABASE_PORT"))
+                    )
 
 @app.route("/get_history", methods=["GET"])
 def get_history():
     if (request.method == 'GET'):
         user_id = session.get('user_id')
         ## Retrieving data from the database
+        connection.ping(reconnect=True)
         with connection.cursor() as cursor:
             cursor.execute(f"SELECT * FROM `history` WHERE `user_id` = {user_id} LIMIT 6")
             data = cursor.fetchall()
@@ -54,6 +56,7 @@ def get_image(image_num):
     try:
         # Fetch image data from the database based on image_id
         user_id = session.get('user_id')
+        connection.ping(reconnect=True)
         with connection.cursor() as cursor:
             cursor.execute("SELECT rice_image FROM history WHERE user_id = %s LIMIT 6", (user_id,))
             image_data = cursor.fetchall()[image_num]
@@ -75,4 +78,4 @@ def get_image(image_num):
         return str(e)
 
 if __name__ == '__main__':
-    app.run('localhost',port=6000)
+    app.run('localhost',port=6000, debug=True)
