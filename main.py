@@ -25,7 +25,7 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 CORS(app) 
 jwt = JWTManager(app)
-model = None
+# model = None
 
 # Connect to the database
 connection = connect(host=os.getenv("DATABASE_URL"),
