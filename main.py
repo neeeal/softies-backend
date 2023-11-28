@@ -108,6 +108,9 @@ def load_classifier():
     # substitute in your own networks just as easily)
     global model
     model = load_model('model/model.h5')
+    return model
+
+model = load_classifier()
 
 def preprocessData(data, image_size = 384):
     ## Main Preprocessing function for input images 
@@ -485,7 +488,6 @@ def create_token():
 ############### END OF USERS API ###############
 
 if __name__ == '__main__':
-    model = load_classifier()
     app.run(
         # 'localhost',
         port=os.getenv("PORT", default=8000)
