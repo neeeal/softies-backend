@@ -5,6 +5,7 @@ tensorflow
 numpy
 pymysql
 flask-cors
+h5py
 Flask-Session
 pillow
 python-dotenv

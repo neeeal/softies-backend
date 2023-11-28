@@ -1,11 +1,12 @@
 from tensorflow.keras.models import load_model
-from tensorflow import convert_to_tensor
 import numpy as np
 import cv2
+import os
+model=None
 
 def test_load_model():
     global model 
-    model = load_model('model/model.h5')
+    model = load_model(os.path.abspath('model/model.h5'))
     assert model
 
 def test_classification_1():
