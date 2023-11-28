@@ -50,9 +50,10 @@ model=None
 #     assert model
 
 def test_load_model():
-    global model 
-    model = tf.keras.models.load_model(os.path.abspath('model/model.h5'))
+    global model
+    model = tf.keras.models.load_model('model/model.h5')
     assert model
+
 
 def test_classification_1():
     image = np.array(cv2.imread('assets/brownhopper.png'))

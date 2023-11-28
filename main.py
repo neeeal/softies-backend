@@ -110,8 +110,6 @@ def load_classifier():
     model = load_model('model/model.h5')
     return model
 
-model = load_classifier()
-
 def preprocessData(data, image_size = 384):
     ## Main Preprocessing function for input images 
     img = cv2.resize(data,(image_size,image_size))
@@ -143,6 +141,7 @@ def skan():
 
         ## Model prediction
         data = preprocessData(data)
+        model = load_classifier()
         result = np.argmax(model(data))+1
         print(result)
         # print("INSERT HERE")
