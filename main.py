@@ -13,10 +13,15 @@ app.secret_key = os.getenv("SECRET_KEY")
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 CORS(app) 
+model = None
 
 ############### RECOMMENDATION API ###############
-
-model = load_model('model/model.h5')
+def load_classifier():
+    # load the pre-trained Keras model (here we are using a model
+    # pre-trained on ImageNet and provided by Keras, but you can
+    # substitute in your own networks just as easily)
+    global model
+    model = load_model('model/model.h5')
 
 @app.route('/', methods=["GET"])
 def index():
@@ -29,6 +34,7 @@ def index():
 ############### END OF RECOMMENDATION API ###############
 
 if __name__ == '__main__':
+    load_classifier()
     app.run(
         # 'localhost',
         port=os.getenv("PORT", default=8000)
