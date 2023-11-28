@@ -25,6 +25,7 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 CORS(app) 
 jwt = JWTManager(app)
+model = None
 
 # Connect to the database
 connection = connect(host=os.getenv("DATABASE_URL"),
@@ -117,7 +118,7 @@ def preprocessData(data, image_size = 384):
     return img_array
 
 @app.route('/skan', methods=["POST"])
-def skan(model=model):
+def skan():
     if request.method == 'POST' and 'image' in request.files:
         ## Retrieving user_id
         user_id = session.get('user_id')
@@ -484,6 +485,7 @@ def create_token():
 ############### END OF USERS API ###############
 
 if __name__ == '__main__':
+    model = load_classifier()
     app.run(
         # 'localhost',
         port=os.getenv("PORT", default=8000)
