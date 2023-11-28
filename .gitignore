@@ -16,6 +16,7 @@ models
 classifier_v8_good
 old_api
 trial.txt
+model_metrics/classifier_model.h5
 
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
