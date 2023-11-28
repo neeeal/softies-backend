@@ -64,6 +64,7 @@ def load_m():
     # model.add( tf.keras.layers.Dense(32, activation = 'softmax'))
     model.add(tf.keras.layers.Dense(10, activation='softmax'))
     model.compile(optimizer=tf.keras.optimizers.RMSprop(1e-4), loss='categorical_crossentropy', metrics=['accuracy'])
+    model.load_weights('model_weights/')
     return model
 
 
@@ -100,11 +101,12 @@ def skan():
         global model
         if model == None:
             model = load_m()#load_model('model_text.h5')
-        # data = preprocessData(data)
-        # result = np.argmax(model(data))+1
-        # print(result)
+            model.load_weights()
+        data = preprocessData(data)
+        result = np.argmax(model(data))+1
+        print(result)
         # print("INSERT HERE")
-        result = '3'
+        # result = '3'
             ## End of prediction
 
         ## Getting Recommendation using output from model
