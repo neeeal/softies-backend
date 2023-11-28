@@ -65,6 +65,8 @@ def load_m():
     model.add(tf.keras.layers.Dense(10, activation='softmax'))
     model.compile(optimizer=tf.keras.optimizers.RMSprop(1e-4), loss='categorical_crossentropy', metrics=['accuracy'])
     model.load_weights('model_weights/')
+    for layer in model.layers:
+        layer.trainable = False
     return model
 
 
