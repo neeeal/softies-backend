@@ -96,12 +96,12 @@ def skan():
         if image_name.split('.')[-1] not in ["jpeg", "png", "jpg"]:
             msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
             return jsonify({"msg":msg})
-        pil_image = Image.open(image.stream).convert('RGB').resize((300, 300))
+        pil_image = Image.open(image.stream).convert('RGB')#.resize((300, 300))
         data = np.array(pil_image)
         
 
         ## Image for saving
-        rice_image = data.tobytes()
+        rice_image = cv2.cvtColor(data, cv2.COLOR_RGB2GRAY).tobytes()
 
         ## Model prediction
         global model
