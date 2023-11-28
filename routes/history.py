@@ -33,7 +33,7 @@ def get_history():
         ## Retrieving data from the database
         connection.ping(reconnect=True)
         with connection.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM `history` WHERE `user_id` = {user_id} LIMIT 6")
+            cursor.execute(f"SELECT * FROM `history` WHERE `user_id` = {user_id}")
             data = cursor.fetchall()
         connection.commit()
         
