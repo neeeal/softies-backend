@@ -112,7 +112,7 @@ def load_model_with_hub(path):
     return load_model(path, custom_objects=custom_objects)
 
 # Load the model using the defined function
-model = load_model_with_hub('model/model.h5')
+model = load_model_with_hub('model//model.h5')
 
 def preprocessData(data, image_size = 384):
     ## Main Preprocessing function for input images 
