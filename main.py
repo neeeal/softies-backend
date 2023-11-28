@@ -17,7 +17,7 @@ from flask_cors import CORS
 
 # Load the environment variables
 dotenv.load_dotenv()
-
+model = load_model('model/model.h5')
 app = Flask(__name__)
 # Change this to your secret key (it can be anything, it's for extra protection)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -476,7 +476,6 @@ def create_token():
 ############### END OF USERS API ###############
 
 if __name__ == '__main__':
-    model = load_model('model/model.h5')
     app.run(
         # 'localhost',
         port=os.getenv("PORT", default=8000)
