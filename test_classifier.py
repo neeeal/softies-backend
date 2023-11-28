@@ -1,57 +1,46 @@
 import tensorflow as tf
 import numpy as np
 import cv2
-import os
-
-# current_directory = os.path.dirname(os.path.abspath(__file__))
-# model_path = os.path.join(current_directory, 'model.h5')
-# model = tf.keras.models.load_model(model_path)
-# def test_load_model():
-#     # Load the HDF5 data
-#     f = h5py.File('model/model.h5', 'r')
-
-#     # Extract model weights
-#     weights = {}
-#     for layer_name in f.keys():
-#         if layer_name not in ['config', 'optimizer']:
-#             weights[layer_name] = f[layer_name]
-
-#     # Create a new model instance
-#     global model
-#     model = tf.keras.Sequential()
-
-#     # Add layers and load weights
-#     for layer_name, layer_weights in weights.items():
-#         layer = tf.keras.layers.deserialize(layer_name, custom_objects={})
-#         layer.set_weights(float(layer_weights))
-#         model.add(layer)
-
-#     # Compile the model
-#     model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-#     assert model
-
-# def test_load_custom_model():
-#     # Open the HDF5 file in read-only mode
-#     with h5py.File('model/model.h5', 'r') as file:
-#         # Check if the file contains the required model attributes
-#         if 'model_weights' not in file or 'model_config' not in file:
-#             raise ValueError("Invalid HDF5 file. Missing model weights or configuration.")
-
-#         # Load the model configuration
-#         model_config = file['model_config'].value
-#         model_config = tf.keras.utils.json_utils.decode(model_config)
-
-#         # Create an empty model
-#         model = tf.keras.models.model_from_config(model_config)
-
-#         # Load the model weights
-#         model_weights_group = file['model_weights']
-#         model.load_weights_from_hdf5_group(model_weights_group)
-#     assert model
+import gdown
+model=None
 
 def test_load_model():
     global model
-    model = tf.keras.models.load_model('model.h5')
+    target_size = (384, 384)
+    efficientnetv2 = tf.keras.applications.efficientnet_v2.EfficientNetV2S(
+                    include_top=False,
+                    weights='imagenet',
+                    input_tensor=None,
+                    input_shape=target_size+(3,),
+                    pooling='avg',
+                    # classes=1000,
+                    # classifier_activation='softmax',
+                )
+    # Create a new model on top of EfficientNetV2
+    model = tf.keras.Sequential()
+    # model.add(tf.keras.layers.Input(target_size+(3,)))
+    model.add(efficientnetv2)
+    model.add(tf.keras.layers.Flatten())
+    model.add(tf.keras.layers.BatchNormalization())
+    # model.add(tf.keras.layers.Dropout(0.3))
+    model.add(tf.keras.layers.Dense(1024, activation = 'relu'))
+    model.add(tf.keras.layers.Dropout(0.3))
+    model.add(tf.keras.layers.Dense(1024, activation = 'relu'))
+    # model.add(tf.keras.layers.Dropout(0.5))
+    # model.add(tf.keras.layers.Dense(1024, activation = 'relu'))
+    # model.add(tf.keras.layers.Dropout(0.5))
+    # model.add(tf.keras.layers.Dense(1024, activation = 'relu'))
+    # model.add(tf.keras.layers.Dropout(0.5))
+    # model.add(tf.keras.layers.Dense(512, activation = 'relu'))
+    # model.add( tf.keras.layers.Dense(64, activation = 'softmax'))
+    # model.add( tf.keras.layers.Dense(32, activation = 'softmax'))
+    model.add(tf.keras.layers.Dense(10, activation='softmax'))
+    model.compile(optimizer=tf.keras.optimizers.legacy.RMSprop(1e-4), loss='categorical_crossentropy', metrics=['accuracy'])
+    url = 'https://drive.google.com/drive/folders/1ptqlr_T0XRs88FAoucKSf7pxcEixRZ9O'
+    gdown.download_folder(url, quiet=True, use_cookies=False)
+    model.load_weights(filepath='model_weights/')
+    for layer in model.layers:
+        layer.trainable = False
     assert model
 
 
