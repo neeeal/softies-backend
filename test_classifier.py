@@ -13,27 +13,14 @@ def test_load_model():
                     input_tensor=None,
                     input_shape=target_size+(3,),
                     pooling='avg',
-                    # classes=1000,
-                    # classifier_activation='softmax',
                 )
-    # Create a new model on top of EfficientNetV2
     model = tf.keras.Sequential()
-    # model.add(tf.keras.layers.Input(target_size+(3,)))
     model.add(efficientnetv2)
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.BatchNormalization())
-    # model.add(tf.keras.layers.Dropout(0.3))
     model.add(tf.keras.layers.Dense(1024, activation = 'relu'))
     model.add(tf.keras.layers.Dropout(0.3))
     model.add(tf.keras.layers.Dense(1024, activation = 'relu'))
-    # model.add(tf.keras.layers.Dropout(0.5))
-    # model.add(tf.keras.layers.Dense(1024, activation = 'relu'))
-    # model.add(tf.keras.layers.Dropout(0.5))
-    # model.add(tf.keras.layers.Dense(1024, activation = 'relu'))
-    # model.add(tf.keras.layers.Dropout(0.5))
-    # model.add(tf.keras.layers.Dense(512, activation = 'relu'))
-    # model.add( tf.keras.layers.Dense(64, activation = 'softmax'))
-    # model.add( tf.keras.layers.Dense(32, activation = 'softmax'))
     model.add(tf.keras.layers.Dense(10, activation='softmax'))
     model.compile(optimizer=tf.keras.optimizers.legacy.RMSprop(1e-4), loss='categorical_crossentropy', metrics=['accuracy'])
     url = 'https://drive.google.com/drive/folders/1ptqlr_T0XRs88FAoucKSf7pxcEixRZ9O'
