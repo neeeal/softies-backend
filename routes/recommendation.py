@@ -109,28 +109,28 @@ def skan():
         # if image_name.split('.')[-1] not in ["jpeg", "png", "jpg"]:
         #     msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
         #     return jsonify({"msg":msg})
-        if DATA['image'][:7] == 'file://':
-            # Corrected code to extract content from response
-            file_path = DATA['image'][7:]  # Remove 'file://' prefix
-            try:
-                if file_path.split(".")[-1] not in ["jpeg", "png", "jpg"]:
-                    msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
-                    return jsonify({"msg":msg}), 400
-                with open(file_path, 'rb') as file:
-                    image_data = file.read()
-            except Exception as e:
-                msg = f"Error reading file: {str(e)}"
-                return jsonify({"msg": msg}), 400
-        else:
-            # If not a file URI, assume it's base64-encoded data
-            extension, file = DATA['image'].strip().split(',')
-            if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
-                msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
-                return jsonify({"msg":msg}), 400
-            padding = len(file) % 4
-            if padding:
-                file += '=' * (4 - padding)
-            image_data = base64.b64decode(file)
+        # if DATA['image'][:7] == 'file://':
+        #     # Corrected code to extract content from response
+        #     file_path = DATA['image'][7:]  # Remove 'file://' prefix
+        #     try:
+        #         if file_path.split(".")[-1] not in ["jpeg", "png", "jpg"]:
+        #             msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
+        #             return jsonify({"msg":msg}), 400
+        #         with open(file_path, 'rb') as file:
+        #             image_data = file.read()
+        #     except Exception as e:
+        #         msg = f"Error reading file: {str(e)}"
+        #         return jsonify({"msg": msg}), 400
+        # else:
+        # If not a file URI, assume it's base64-encoded data
+        extension, file = DATA['image'].strip().split(',')
+        if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
+            msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
+            return jsonify({"msg":msg}), 400
+        padding = len(file) % 4
+        if padding:
+            file += '=' * (4 - padding)
+        image_data = base64.b64decode(file)
         image_stream = BytesIO(image_data)
         pil_image = Image.open(image_stream#.stream
                                ).convert('RGB')#.resize((300, 300))
