@@ -82,21 +82,31 @@ def preprocessData(data, image_size = 384):
     img_array *= 1./255
     return img_array
 
+import base64
+from io import BytesIO
+
 @recommendation_bp.route('/skan', methods=["POST"])
 def skan():
+    DATA = request.get_json()
     if request.method == 'POST' and 'image' in request.files:
         ## Retrieving user_id
         user_id = session.get('user_id')
         print(user_id)
         ## Prediction route accepting images and outputs prediction of A.I.
         ## Read Image from input and convert to CV2
-        image = request.files['image']
-        image_name=image.filename
-        ## Checking file name if jpg jpeg or png
-        if image_name.split('.')[-1] not in ["jpeg", "png", "jpg"]:
-            msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
-            return jsonify({"msg":msg})
-        pil_image = Image.open(image.stream).convert('RGB')#.resize((300, 300))
+        
+        
+        # image = request.files['image']
+        # image_name=image.filename
+        # ## Checking file name if jpg jpeg or png
+        # if image_name.split('.')[-1] not in ["jpeg", "png", "jpg"]:
+        #     msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
+        #     return jsonify({"msg":msg})
+        file = DATA['image']
+        im_bytes = base64.b64decode(file)
+        image = BytesIO(im_bytes)
+        pil_image = Image.open(image#.stream
+                               ).convert('RGB')#.resize((300, 300))
         data = np.array(pil_image)
         
 

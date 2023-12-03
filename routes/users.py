@@ -35,24 +35,25 @@ def signup():
     # signup route checking that all fields are filled
     # will add method to continue signup even lesser priority fields are empty
     msg = ''
+    DATA = request.get_json()
     # Check if form fields POST requests exist (user submitted form)
-    if (request.method == 'POST' and 'username' in request.form 
-        and 'password' in request.form and 'email' in request.form 
-        # and 'first_name' in request.form and 'last_name' in request.form
-        # and 'contact' in request.form
+    if (request.method == 'POST' and 'username' in DATA 
+        and 'password' in DATA and 'email' in DATA 
+        # and 'first_name' in DATA and 'last_name' in DATA
+        # and 'contact' in DATA
         ):
         # Create variables for easy access
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
-        if 'first_name' in request.form:
-            if request.form['first_name'] != '': first_name = request.form['first_name']
+        username = DATA['username']
+        password = DATA['password']
+        email = DATA['email']
+        if 'first_name' in DATA:
+            if DATA['first_name'] != '': first_name = DATA['first_name']
         else: first_name=None
-        if 'last_name' in request.form:
-            if request.form['last_name'] != '': last_name = request.form['last_name']
+        if 'last_name' in DATA:
+            if DATA['last_name'] != '': last_name = DATA['last_name']
         else: last_name=None
-        if 'contact' in request.form:
-            if request.form['contact'] != '': contact = request.form['contact']
+        if 'contact' in DATA:
+            if DATA['contact'] != '': contact = DATA['contact']
         else: contact=None
         flag = 0 ## checker if error occured
         
@@ -119,17 +120,18 @@ def login():
     # login route only using username and password for now
     # soon add email for login
     msg = 'Incorrect user credentials'
+    DATA = request.get_json()
     # Check if "username" and "password" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'password' in request.form and ('email' in request.form or 
-                                                                    'username' in request.form ):
+    if request.method == 'POST' and 'password' in DATA and ('email' in DATA or 
+                                                                    'username' in DATA ):
         # Create variables for easy access
         try:
-            value = request.form['username']
+            value = DATA['username']
             key = 'username'
         except:
-            value = request.form['email']
+            value = DATA['email']
             key = 'email'
-        password = request.form['password']
+        password = DATA['password']
         # Retrieve the hashed password
         hash = password + users_bp.secret_key
         hash = hashlib.sha1(hash.encode())
@@ -163,6 +165,7 @@ def login():
 
 @users_bp.route('/update_user', methods = ['GET', 'PUT'])
 def update_user():
+    DATA = request.get_json()
     # user update with auto fill in initial GET request
     user_id = session.get('user_id')
     username = session.get('username')
@@ -181,21 +184,21 @@ def update_user():
                         'contact':contact,
                         })
     # Check if form fields POST requests exist (user submitted form)
-    elif (request.method == 'PUT' and 'password' in request.form):
+    elif (request.method == 'PUT' and 'password' in DATA):
         # Create variables for easy access
-        password = request.form['password']
-        if "username" in request.form and request.form['username'] != '': new_username = request.form['username']
+        password = DATA['password']
+        if "username" in DATA and DATA['username'] != '': new_username = DATA['username']
         else: new_username = username
-        if "email" in request.form and request.form['email'] != '': new_email = request.form['email']
+        if "email" in DATA and DATA['email'] != '': new_email = DATA['email']
         else: new_email = email
-        if "first_name" in request.form and request.form['first_name'] != '': new_first_name = request.form['first_name']
+        if "first_name" in DATA and DATA['first_name'] != '': new_first_name = DATA['first_name']
         else: new_first_name = first_name
-        if "last_name" in request.form and request.form['last_name'] != '': new_last_name = request.form['last_name']
+        if "last_name" in DATA and DATA['last_name'] != '': new_last_name = DATA['last_name']
         else: new_last_name = new_last_name
-        if "contact" in request.form and request.form['contact'] != '': new_contact = request.form['contact']
+        if "contact" in DATA and DATA['contact'] != '': new_contact = DATA['contact']
         else: new_contact = contact
-        if "new_password" in request.form and request.form['new_password'] != '': 
-            new_password = request.form['new_password']
+        if "new_password" in DATA and DATA['new_password'] != '': 
+            new_password = DATA['new_password']
         else: new_password = password
         
         flag = 0 ## checker if error occured
@@ -277,7 +280,7 @@ def update_user():
             msg = 'Contact already taken'
         else:
             msg = 'Unknown error. Contact website administrator'
-    elif 'password' not in request.form:
+    elif 'password' not in DATA:
         msg = 'Please enter your current password corrently'
 
     return jsonify({'msg':msg})
