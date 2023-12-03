@@ -115,9 +115,9 @@ def skan():
         # data = cv2.imdecode(np.frombuffer(base64_bytes, np.uint8), cv2.IMREAD_COLOR)
         # image = BytesIO(base64_bytes)
         
-        if ['jpeg','jpg','png'] not in extension: 
-            msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
-            return jsonify({"msg":msg}), 400
+        # if ['jpeg','jpg','png'] not in extension: 
+        #     msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
+        #     return jsonify({"msg":msg}), 400
         image_data = base64.b64decode(file)
         image_stream = BytesIO(image_data)
         pil_image = Image.open(image_stream#.stream
