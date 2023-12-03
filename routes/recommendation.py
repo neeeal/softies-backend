@@ -124,7 +124,7 @@ def skan():
         # else:
         # If not a file URI, assume it's base64-encoded data
         print(DATA['image'][:100])
-        print(DATA['image'][100:])
+        print(DATA['image'][-100:])
         if len(DATA['image'].strip().split(',')) == 2:
             extension, file = DATA['image'].strip().split(',')
             if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
