@@ -123,6 +123,7 @@ def skan():
         #         return jsonify({"msg": msg}), 400
         # else:
         # If not a file URI, assume it's base64-encoded data
+        print(DATA['image'][:100])
         extension, file = DATA['image'].strip().split(',')
         if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
             msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
