@@ -89,6 +89,8 @@ from io import BytesIO
 def skan():
     DATA = request.get_json()
     if request.method == 'POST' and 'image' in DATA:
+        if DATA['image'] == None:
+            return jsonify({'msg':'Empty file passed'}),400
         ## Retrieving user_id
         user_id = session.get('user_id')
         print(user_id)
@@ -115,9 +117,9 @@ def skan():
         # data = cv2.imdecode(np.frombuffer(base64_bytes, np.uint8), cv2.IMREAD_COLOR)
         # image = BytesIO(base64_bytes)
         
-        # if ['jpeg','jpg','png'] not in extension: 
-        #     msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
-        #     return jsonify({"msg":msg}), 400
+        if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
+            msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
+            return jsonify({"msg":msg}), 400
         image_data = base64.b64decode(file)
         image_stream = BytesIO(image_data)
         pil_image = Image.open(image_stream#.stream
