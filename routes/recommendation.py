@@ -110,6 +110,7 @@ def skan():
         #     msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
         #     return jsonify({"msg":msg})
         extension,file = DATA['image'].strip().split(',')
+        print(extension)
         padding = len(file) % 4
         if padding:
             file += '=' * (4 - padding)
@@ -122,9 +123,9 @@ def skan():
         # data = cv2.imdecode(np.frombuffer(base64_bytes, np.uint8), cv2.IMREAD_COLOR)
         # image = BytesIO(base64_bytes)
         
-        if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
-            msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
-            return jsonify({"msg":msg}), 400
+        # if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
+        #     msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
+        #     return jsonify({"msg":msg}), 400
         image_data = base64.b64decode(file)
         image_stream = BytesIO(image_data)
         pil_image = Image.open(image_stream#.stream
