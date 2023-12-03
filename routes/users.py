@@ -79,7 +79,7 @@ def signup():
         
         ## Check if error occured
         if flag == 1: 
-            return jsonify({"msg":msg})
+            return jsonify({"msg":msg}), 400
         
         
         
@@ -113,7 +113,7 @@ def signup():
             msg = 'Contact number already taken'
         else:
             msg = 'Unknown error. Contact website administrator'
-    return jsonify({'msg':msg})
+    return jsonify({'msg':msg}), 500
 
 @users_bp.route('/login', methods=['POST'])
 def login():
@@ -156,11 +156,11 @@ def login():
             session['email'] = account['email']
             # Redirect to home page
             msg =  'Logged in successfully!'
-            return jsonify({'msg':msg, 'username':session.get('username'), 'user_id':session.get('user_id')})
+            return jsonify({'msg':msg, 'username':session.get('username'), 'user_id':session.get('user_id')}), 200
         else:
             # Account doesnt exist or username/password incorrect
-            return jsonify({'msg':msg})
-    return jsonify({'msg':msg})
+            return jsonify({'msg':msg}), 400
+    return jsonify({'msg':msg}), 400
         
 
 @users_bp.route('/update_user', methods = ['GET', 'PUT'])
@@ -182,7 +182,7 @@ def update_user():
                         'first_name':first_name,
                         'last_name':last_name,
                         'contact':contact,
-                        })
+                        }), 200
     # Check if form fields POST requests exist (user submitted form)
     elif (request.method == 'PUT' and 'password' in DATA):
         # Create variables for easy access
@@ -225,7 +225,7 @@ def update_user():
         
         ## Check if error occured
         if flag == 1: 
-            return jsonify({"msg":msg})
+            return jsonify({"msg":msg}), 400
         
         # Hash old and new password
         hash = password + users_bp.secret_key
@@ -253,7 +253,7 @@ def update_user():
                 if account['password'] != password:
                     # Incorrect Password
                     msg = 'Incorrect old password'
-                    return jsonify({'msg':msg})
+                    return jsonify({'msg':msg}), 400
                 
             with connection.cursor() as cursor:
                 cursor = connection.cursor()
@@ -283,7 +283,7 @@ def update_user():
     elif 'password' not in DATA:
         msg = 'Please enter your current password corrently'
 
-    return jsonify({'msg':msg})
+    return jsonify({'msg':msg}), 400
 
 @users_bp.route("/logout", methods=['POST'])
 def logout():
@@ -300,7 +300,7 @@ def logout():
             session.pop("contact", None)
             session.pop("email", None)
             session.pop("loggedin", False)
-    return jsonify({'msg':msg})
+    return jsonify({'msg':msg}), 200
 
 @users_bp.route("/get_user", methods=["GET"])
 def get_user():
@@ -311,19 +311,19 @@ def get_user():
         return jsonify({'msg':msg,'username':session.get('username'), 'user_id':session.get('user_id'),
                         'loggedin':session.get('loggedin'), 'email':session.get('email'),
                         'first_name':session.get('first_name'), 'last_name':session.get('last_name')
-                        })
-    return jsonify({'msg':msg})
+                        }), 200
+    return jsonify({'msg':msg}), 400
 
 @users_bp.route('/token', methods=["POST"])
 def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
     if email != "test" or password != "test":
-        return {"msg": "Wrong email or password"}, 401
+        return {"msg": "Wrong email or password"}, 400
 
     access_token = create_access_token(identity=email)
     response = {"access_token":access_token}
-    return response
+    return response, 200
 ## ADD forget_password FUNCTION AND ROUTE
 ##
 ##

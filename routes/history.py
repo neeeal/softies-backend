@@ -46,9 +46,9 @@ def get_history():
                               'image_name':data[i]['image_name']}
 
         msg = 'Successfully retrieved history'
-        return jsonify({'msg': msg, 'history':history})
+        return jsonify({'msg': msg, 'history':history}), 200
     msg = 'Invalid request'
-    return jsonify({'msg':msg})
+    return jsonify({'msg':msg}), 400
 
 # Create a route to serve images
 @history_bp.route('/get_image/<int:image_num>', methods=['GET'])
@@ -75,7 +75,7 @@ def get_image(image_num):
         else:
             return 'Image not found', 404
     except Exception as e:
-        return str(e)
+        return str(e), 400
 
 # if __name__ == '__main__':
 #     history_bp.run('localhost',port=6000, debug=True)

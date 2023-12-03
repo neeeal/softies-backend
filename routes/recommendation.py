@@ -102,10 +102,25 @@ def skan():
         # if image_name.split('.')[-1] not in ["jpeg", "png", "jpg"]:
         #     msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
         #     return jsonify({"msg":msg})
-        file = DATA['image']
-        im_bytes = base64.b64decode(file)
-        image = BytesIO(im_bytes)
-        pil_image = Image.open(image#.stream
+        extension,file = DATA['image'].strip().split(',')
+        padding = len(file) % 4
+        if padding:
+            file += '=' * (4 - padding)
+        print(type(file))
+        print(len(file))
+        # base64_bytes = file.encode("utf-8") 
+        # print(base64_bytes)        
+        # im_bytes = base64_bytes.decode('ascii')
+        print('working')
+        # data = cv2.imdecode(np.frombuffer(base64_bytes, np.uint8), cv2.IMREAD_COLOR)
+        # image = BytesIO(base64_bytes)
+        
+        if ['jpeg','jpg','png'] not in extension: 
+            msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
+            return jsonify({"msg":msg}), 400
+        image_data = base64.b64decode(file)
+        image_stream = BytesIO(image_data)
+        pil_image = Image.open(image_stream#.stream
                                ).convert('RGB')#.resize((300, 300))
         data = np.array(pil_image)
         
@@ -144,14 +159,14 @@ def skan():
         with connection.cursor() as cursor:
             # print("working")
             sql = "INSERT INTO `history` (`user_id`, `stress_id`, `rice_image`, `image_name`) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (user_id, stress_id, rice_image, image_name))
+            cursor.execute(sql, (user_id, stress_id, rice_image, stress_id))
         connection.commit()
         
         return jsonify({'msg':msg, 'stress_name':stress_name, stress_type:'stress_type',
                         'stress_level':stress_level, 'description':description, 'description_src':description_src,
-                        'recommendations':recommendation, 'recommendation_src':recommendation_src})
+                        'recommendations':recommendation, 'recommendation_src':recommendation_src}), 200
     msg = 'Invalid request'
-    return jsonify({'msg':msg})
+    return jsonify({'msg':msg}),400
 
 
 # if __name__ == '__main__':

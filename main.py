@@ -18,7 +18,7 @@ CORS(app)
 
 @app.route('/api')
 def index():
-    return jsonify({'status': 200, 'msg':'skanin API is now online'})
+    return jsonify({'msg':'skanin API is now online'}), 200
 
 # Register blueprints
 app.register_blueprint(history_bp, url_prefix='/api/history')
