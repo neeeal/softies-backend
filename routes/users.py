@@ -104,6 +104,7 @@ def signup():
                                 VALUES ('{username}','{password}','{email}','{first_name}','{last_name}','{contact}')''')
             connection.commit()
             msg = 'Account created succesfully'
+            return jsonify({'msg':msg}), 200
         elif account['email']==email:
             # Message if email is taken
             msg = 'Email already taken'
