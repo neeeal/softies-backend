@@ -10,6 +10,7 @@ import dotenv
 import os
 import tensorflow as tf
 import gdown
+import requests
 # Load the environment variables
 dotenv.load_dotenv()
 
@@ -109,6 +110,8 @@ def skan():
         #     msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
         #     return jsonify({"msg":msg})
         print(DATA['image'][:100])
+        if DATA['image'][:4] == 'file':
+            image_data = requests.get(DATA['image'])
         extension,file = DATA['image'].strip().split(',')
         print(extension)
         padding = len(file) % 4
