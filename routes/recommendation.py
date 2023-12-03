@@ -88,7 +88,7 @@ from io import BytesIO
 @recommendation_bp.route('/skan', methods=["POST"])
 def skan():
     DATA = request.get_json()
-    if request.method == 'POST' and 'image' in request.files:
+    if request.method == 'POST' and 'image' in DATA:
         ## Retrieving user_id
         user_id = session.get('user_id')
         print(user_id)
