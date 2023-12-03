@@ -42,6 +42,8 @@ def signup():
         # and 'first_name' in DATA and 'last_name' in DATA
         # and 'contact' in DATA
         ):
+        if session.get("loggedin") == True:
+            return jsonify({'msg':"You are already logged in"}),400
         # Create variables for easy access
         username = DATA['username']
         password = DATA['password']
@@ -125,6 +127,8 @@ def login():
     if request.method == 'POST' and 'password' in DATA and ('email' in DATA or 
                                                                     'username' in DATA ):
         # Create variables for easy access
+        if session.get("loggedin") == True:
+            return jsonify({'msg':"You are already logged in"}),400
         try:
             value = DATA['username']
             key = 'username'
@@ -165,6 +169,8 @@ def login():
 
 @users_bp.route('/update_user', methods = ['GET', 'PUT'])
 def update_user():
+    if session.get("loggedin") == False:
+        return jsonify({'msg':"You are not logged in"}),400
     DATA = request.get_json()
     # user update with auto fill in initial GET request
     user_id = session.get('user_id')

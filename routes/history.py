@@ -29,6 +29,8 @@ connection = connect(host=os.getenv("DATABASE_URL"),
 @history_bp.route("/get_history", methods=["GET"])
 def get_history():
     if (request.method == 'GET'):
+        if session.get("loggedin") == False:
+            return jsonify({'msg':"You are not logged in"}),400
         user_id = session.get('user_id')
         ## Retrieving data from the database
         connection.ping(reconnect=True)
@@ -55,6 +57,8 @@ def get_history():
 def get_image(image_num):
     try:
         # Fetch image data from the database based on image_id
+        if session.get("loggedin") == False:
+            return jsonify({'msg':"You are not logged in"}),400
         user_id = session.get('user_id')
         connection.ping(reconnect=True)
         with connection.cursor() as cursor:
