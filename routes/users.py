@@ -307,7 +307,9 @@ def logout():
             session.pop("contact", None)
             session.pop("email", None)
             session.pop("loggedin", False)
-    return jsonify({'msg':msg}), 200
+            return jsonify({'msg':msg}), 200
+    msg = "error logging out"
+    return jsonify({'msg':msg}), 500
 
 @users_bp.route("/get_user", methods=["GET"])
 def get_user():
