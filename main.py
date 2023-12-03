@@ -4,6 +4,7 @@ from routes.recommendation import recommendation_bp
 from routes.users import users_bp
 import dotenv
 import os
+from flask_cors import CORS
 
 dotenv.load_dotenv()
 
@@ -11,6 +12,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+CORS(app)
 
 # jwt = JWTManager(app)
 
