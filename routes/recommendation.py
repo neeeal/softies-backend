@@ -108,6 +108,7 @@ def skan():
         # if image_name.split('.')[-1] not in ["jpeg", "png", "jpg"]:
         #     msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
         #     return jsonify({"msg":msg})
+        print(DATA['image'][:100])
         extension,file = DATA['image'].strip().split(',')
         print(extension)
         padding = len(file) % 4
