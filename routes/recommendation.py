@@ -124,14 +124,25 @@ def skan():
         # else:
         # If not a file URI, assume it's base64-encoded data
         print(DATA['image'][:100])
-        extension, file = DATA['image'].strip().split(',')
-        if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
-            msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
-            return jsonify({"msg":msg}), 400
-        padding = len(file) % 4
-        if padding:
-            file += '=' * (4 - padding)
-        image_data = base64.b64decode(file)
+        print(DATA['image'][100:])
+        if len(DATA['image'].strip().split(',')) == 2:
+            extension, file = DATA['image'].strip().split(',')
+            if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
+                msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
+                return jsonify({"msg":msg}), 400
+            padding = len(file) % 4
+            if padding:
+                file += '=' * (4 - padding)
+            image_data = base64.b64decode(file)
+        else:
+            file = DATA['image'].strip()
+            # if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
+            #     msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
+                # return jsonify({"msg":msg}), 400
+            padding = len(file) % 4
+            if padding:
+                file += '=' * (4 - padding)
+            image_data = base64.b64decode(file)
         image_stream = BytesIO(image_data)
         pil_image = Image.open(image_stream#.stream
                                ).convert('RGB')#.resize((300, 300))
