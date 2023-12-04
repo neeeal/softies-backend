@@ -16,3 +16,4 @@ numpy==1.23.5
 numba
 flask-jwt-extended
 gunicorn>=20.1.0
+cryptography
