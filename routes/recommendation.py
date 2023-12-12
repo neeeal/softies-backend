@@ -186,7 +186,7 @@ def skan():
             cursor.execute(sql, (user_id, stress_id, rice_image, stress_id))
         connection.commit()
         
-        return jsonify({'msg':msg, 'stress_name':stress_name, stress_type:'stress_type',
+        return jsonify({'msg':msg, 'stress_name':stress_name, 'stress_type':stress_type,
                         'stress_level':stress_level, 'description':description, 'description_src':description_src,
                         'recommendations':recommendation, 'recommendation_src':recommendation_src}), 200
     msg = 'Invalid request'
