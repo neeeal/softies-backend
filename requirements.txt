@@ -17,3 +17,6 @@ numba
 flask-jwt-extended
 gunicorn>=20.1.0
 cryptography
+flask_mail
+asyncio
+aiohttp
