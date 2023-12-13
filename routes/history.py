@@ -131,26 +131,31 @@ def get_history_entry(history_id):
             return jsonify({'msg': "You are not logged in"}), 400
 
         user_id = request.headers.get('User-Id')
+        stress_id = request.headers.get('Stress-Id')
         connection.ping(reconnect=True)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM `history` WHERE `user_id` = %s AND `history_id` = %s", (user_id, history_id))
-            history_entry = cursor.fetchone()
+            cursor.execute("SELECT * FROM `rice_stress` WHERE `stress_id`=%s", (stress_id,))
+            rice_stress_data = cursor.fetchone()
 
-            if history_entry:
-                cursor.execute("SELECT rice_image FROM history WHERE user_id = %s AND history_id = %s", (user_id, history_id))
-                image_data = cursor.fetchone()
-
-                entry = {
-                    'history_id': history_entry['history_id'],
-                    'user_id': history_entry['user_id'],
-                    'stress_id': history_entry['stress_id'],
-                    'date_transaction': history_entry['date_transaction'],
-                    'image_name': history_entry['image_name'],
-                }
+            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s AND `history_id`=%s", (user_id, history_id,))
+            image_data = cursor.fetchone()
+            entry = {
+            # 'history_id': history_data['history_id'],
+            # 'user_id': rice_stress_data['user_id'],
+            'stress_type': rice_stress_data['stress_type'],
+            'stress_id': rice_stress_data['stress_id'],
+            # 'date_transaction': rice_stress_data['date_transaction'],
+            'stress_name': rice_stress_data['stress_name'],
+            'stress_level': rice_stress_data['stress_level'],
+            'description': rice_stress_data['description'],
+            'recommendation': rice_stress_data['recommendation'],
+            'recommendation_src': rice_stress_data['recommendation_src'],
+            'description_src': rice_stress_data['description_src'],
+            }
 
                 # If there is corresponding image data, include it
-                if image_data:
-                    entry['image'] = base64.b64encode(image_data[i]['rice_image']).decode('utf-8')
+            if image_data:
+                entry['image'] = base64.b64encode(image_data['rice_image']).decode('utf-8')
 
                 msg = f'Successfully retrieved history entry with history_id {history_id}'
                 return jsonify({'msg': msg, 'history_entry': entry}), 200
