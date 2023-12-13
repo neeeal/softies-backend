@@ -154,8 +154,8 @@ def skan():
         ## Image for saving
         rice_image = image_data
 
-        with open("old_api/test_bin.bin", 'wb') as BIN:
-            BIN.write(rice_image)
+        # with open("old_api/test_bin.bin", 'wb') as BIN:
+        #     BIN.write(rice_image)
 
         ## Model prediction
         global model
