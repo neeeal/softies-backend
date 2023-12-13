@@ -95,10 +95,11 @@ def skan():
         ## Retrieving user_id
         # Retrieving user_id from headers
         user_id = request.headers.get('User-Id')
-        if user_id is None:
+        print(user_id)
+        if user_id == None:
             # Currently, assign user_id to a dummy user
-            user_id = 24
-            # return jsonify({'msg': 'Please log in to skan'}), 400
+            # user_id = 24
+            return jsonify({'msg': 'Please log in to scan'}), 400
         print(user_id)
         ## Prediction route accepting images and outputs prediction of A.I.
         ## Read Image from input and convert to CV2
