@@ -76,10 +76,10 @@ def get_history_with_images():
 
         connection.ping(reconnect=True)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM `history` WHERE `user_id` = %s LIMIT 6", (user_id,))
+            cursor.execute("SELECT * FROM `history` WHERE `user_id` = %s ORDER BY history_id DESC LIMIT 6", (user_id,))
             history_data = cursor.fetchall()
 
-            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s LIMIT 6", (user_id,))
+            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s ORDER BY history_id DESC LIMIT 6", (user_id,))
             image_data = cursor.fetchall()
 
         connection.commit()
