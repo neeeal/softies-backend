@@ -28,58 +28,127 @@ connection = connect(host=os.getenv("DATABASE_URL"),
 
 @history_bp.route("/get_history", methods=["GET"])
 def get_history():
-    if (request.method == 'GET'):
-        if session.get("loggedin") == False:
-            return jsonify({'msg':"You are not logged in"}),400
-        user_id = session.get('user_id')
-        ## Retrieving data from the database
-        connection.ping(reconnect=True)
-        with connection.cursor() as cursor:
-            cursor.execute(f"SELECT * FROM `history` WHERE `user_id` = {user_id}")
-            data = cursor.fetchall()
-        connection.commit()
-        
-        ## Formatting retrieved data
-        history={}
-        for i in range(0, len(data)):
-            ## Assnigning to history dictionary/object
-            history[str(i)]= {'history_id':data[i]['history_id'],'user_id':data[i]['user_id'],
-                              'stress_id':data[i]['stress_id'],'date_transaction':data[i]['date_transaction'],
-                              'image_name':data[i]['image_name']}
-
-        msg = 'Successfully retrieved history'
-        return jsonify({'msg': msg, 'history':history}), 200
-    msg = 'Invalid request'
-    return jsonify({'msg':msg}), 400
-
-# Create a route to serve images
-@history_bp.route('/get_image/<int:image_num>', methods=['GET'])
-def get_image(image_num):
     try:
-        # Fetch image data from the database based on image_id
-        if session.get("loggedin") == False:
-            return jsonify({'msg':"You are not logged in"}),400
+        if request.method == 'GET':
+            if session.get("loggedin") is False:
+                return jsonify({'msg': "You are not logged in"}), 400
+
+            user_id = session.get('user_id')
+
+            # Retrieving data from the database
+            connection.ping(reconnect=True)
+            with connection.cursor() as cursor:
+                cursor.execute(f"SELECT * FROM `history` WHERE `user_id` = {user_id}")
+                data = cursor.fetchall()
+
+            if not data:
+                return jsonify({'msg': 'No history found for the user'}), 404
+
+            # Formatting retrieved data
+            history = {str(i): {
+                'history_id': data[i]['history_id'],
+                'user_id': data[i]['user_id'],
+                'stress_id': data[i]['stress_id'],
+                'date_transaction': data[i]['date_transaction'],
+                'image_name': data[i]['image_name']
+            } for i in range(len(data))}
+
+            msg = 'Successfully retrieved history'
+            return jsonify({'msg': msg, 'history': history}), 200
+
+        msg = 'Invalid request'
+        return jsonify({'msg': msg}), 400
+    except Exception as e:
+        return str(e), 500
+
+## get all history entries (might only get 6)
+@history_bp.route("/get_history_with_images", methods=["GET"])
+def get_history_with_images():
+    try:
+        # Fetch history data and image data from the database
+        if session.get("loggedin") is False:
+            return jsonify({'msg': "You are not logged in"}), 400
+
         user_id = session.get('user_id')
         connection.ping(reconnect=True)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s", (user_id,))
-            image_data = cursor.fetchall()[image_num]
+            cursor.execute("SELECT * FROM `history` WHERE `user_id` = %s LIMIT 6", (user_id,))
+            history_data = cursor.fetchall()
+
+            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s LIMIT 6", (user_id,))
+            image_data = cursor.fetchall()
+
         connection.commit()
 
-        if image_data:
-            # Convert image bytes to numpy array
-            image = Image.frombytes("RGB", (224, 224), image_data['rice_image']) 
+        # Combine history and image data
+        history_with_images = []
+        for i, history_entry in enumerate(history_data):
+            entry = {
+                'history_id': history_entry['history_id'],
+                'user_id': history_entry['user_id'],
+                'stress_id': history_entry['stress_id'],
+                'date_transaction': history_entry['date_transaction'],
+                'image_name': history_entry['image_name'],
+            }
 
-            # Convert the image to a response
-            image_io = io.BytesIO()
-            image.save(image_io, 'JPEG')
-            image_io.seek(0)
+            # If there is corresponding image data, include it
+            if i < len(image_data):
+                image = Image.frombytes("RGB", (224, 224), image_data[i]['rice_image'])
+                image_io = io.BytesIO()
+                image.save(image_io, 'JPEG')
+                image_io.seek(0)
+                entry['image'] = image_io.getvalue()
 
-            return send_file(image_io, mimetype='image/jpeg'), 200
-        else:
-            return 'Image not found', 404
+            history_with_images.append(entry)
+
+        msg = 'Successfully retrieved history with images'
+        return jsonify({'msg': msg, 'history_with_images': history_with_images}), 200
+
     except Exception as e:
-        return str(e), 400
+        return str(e), 500
+
+## get history entry of one only
+@history_bp.route("/get_history_entry/<int:history_id>", methods=["GET"])
+def get_history_entry(history_id):
+    try:
+        # Fetch history data and image data for a specific history entry
+        if session.get("loggedin") is False:
+            return jsonify({'msg': "You are not logged in"}), 400
+
+        user_id = session.get('user_id')
+        connection.ping(reconnect=True)
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM `history` WHERE `user_id` = %s AND `history_id` = %s", (user_id, history_id))
+            history_entry = cursor.fetchone()
+
+            if history_entry:
+                cursor.execute("SELECT rice_image FROM history WHERE user_id = %s AND history_id = %s", (user_id, history_id))
+                image_data = cursor.fetchone()
+
+                entry = {
+                    'history_id': history_entry['history_id'],
+                    'user_id': history_entry['user_id'],
+                    'stress_id': history_entry['stress_id'],
+                    'date_transaction': history_entry['date_transaction'],
+                    'image_name': history_entry['image_name'],
+                }
+
+                # If there is corresponding image data, include it
+                if image_data:
+                    image = Image.frombytes("RGB", (224, 224), image_data['rice_image'])
+                    image_io = io.BytesIO()
+                    image.save(image_io, 'JPEG')
+                    image_io.seek(0)
+                    entry['image'] = image_io.getvalue()
+
+                msg = f'Successfully retrieved history entry with history_id {history_id}'
+                return jsonify({'msg': msg, 'history_entry': entry}), 200
+            else:
+                return 'History entry not found', 404
+
+    except Exception as e:
+        return str(e), 500
+
 
 # if __name__ == '__main__':
 #     history_bp.run('localhost',port=6000, debug=True)
