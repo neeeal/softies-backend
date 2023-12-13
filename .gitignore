@@ -19,7 +19,7 @@ trial.txt
 model_metrics/classifier_model.h5
 model_weights
 otp_gen.ipynb
-
+3designs_v2.ipynb
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 

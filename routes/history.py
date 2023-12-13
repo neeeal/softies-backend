@@ -130,7 +130,7 @@ def get_history_entry(history_id):
         if session.get("loggedin") is False:
             return jsonify({'msg': "You are not logged in"}), 400
 
-        user_id = session.get('user_id')
+        user_id = request.headers.get('User-Id')
         connection.ping(reconnect=True)
         with connection.cursor() as cursor:
             cursor.execute("SELECT * FROM `history` WHERE `user_id` = %s AND `history_id` = %s", (user_id, history_id))
@@ -150,12 +150,7 @@ def get_history_entry(history_id):
 
                 # If there is corresponding image data, include it
                 if image_data:
-                    image = Image.frombytes("L", (224, 224), image_data['rice_image'])
-                    image = image.convert("RGB")
-                    image_io = io.BytesIO()
-                    image.save(image_io, 'JPEG')
-                    image_io.seek(0)
-                    entry['image'] = image_io.getvalue()
+                    entry['image'] = base64.b64encode(image_data[i]['rice_image']).decode('utf-8')
 
                 msg = f'Successfully retrieved history entry with history_id {history_id}'
                 return jsonify({'msg': msg, 'history_entry': entry}), 200
