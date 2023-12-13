@@ -7,6 +7,7 @@ from PIL import Image
 import io
 import dotenv
 import os
+import base64
 # Load the environment variables
 dotenv.load_dotenv()
 
@@ -97,7 +98,9 @@ def get_history_with_images():
                 image_io = io.BytesIO()
                 image.save(image_io, 'JPEG')
                 image_io.seek(0)
-                entry['image'] = image_io.getvalue()
+                
+                # Convert binary image data to base64-encoded string
+                entry['image'] = base64.b64encode(image_io.getvalue()).decode('utf-8')
 
             history_with_images.append(entry)
 
