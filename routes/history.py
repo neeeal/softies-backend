@@ -93,7 +93,6 @@ def get_history_with_images():
                 'stress_id': history_entry['stress_id'],
                 'date_transaction': history_entry['date_transaction'],
                 'image_name': history_entry['image_name'],
-                'scan_id':i+1
             }
 
             # If there is corresponding image data, include it
