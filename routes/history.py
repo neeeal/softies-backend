@@ -104,14 +104,15 @@ def get_history_with_images():
 
             # If there is corresponding image data, include it
             if i < len(image_data):
-                image = Image.frombytes("RGB", (224, 224), image_data[i]['rice_image'])
-                image_io = io.BytesIO()
-                image.save(image_io, 'JPEG')
-                image_io.seek(0)
+                # image = Image.frombytes("RGB", (224, 224), image_data[i]['rice_image'])
+                # image_io = io.BytesIO()
+                # image.save(image_io, 'JPEG')
+                # image_io.seek(0)
 
-                # Convert binary image data to base64-encoded string
-                entry['image'] = base64.b64encode(image_io.getvalue()).decode('utf-8')
-
+                # # Convert binary image data to base64-encoded string
+                # entry['image'] = base64.b64encode(image_io.getvalue()).decode('utf-8')
+                # Decode the string
+                entry['image'] = base64.b64encode(image_data[i]['rice_image']).decode('utf-8')
             history_with_images.append(entry)
             # print(history_with_images)
 

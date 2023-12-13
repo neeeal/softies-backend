@@ -148,10 +148,14 @@ def skan():
         pil_image = Image.open(image_stream#.stream
                                ).convert('RGB')#.resize((300, 300))
         data = np.array(pil_image)
+        # pil_image.save("old_api/test_pil.jpeg")
         
 
         ## Image for saving
-        rice_image = data.tobytes()
+        rice_image = image_data
+
+        with open("old_api/test_bin.bin", 'wb') as BIN:
+            BIN.write(rice_image)
 
         ## Model prediction
         global model
