@@ -149,7 +149,8 @@ def get_history_entry(history_id):
 
                 # If there is corresponding image data, include it
                 if image_data:
-                    image = Image.frombytes("RGB", (224, 224), image_data['rice_image'])
+                    image = Image.frombytes("L", (224, 224), image_data['rice_image'])
+                    image = image.convert("RGB")
                     image_io = io.BytesIO()
                     image.save(image_io, 'JPEG')
                     image_io.seek(0)

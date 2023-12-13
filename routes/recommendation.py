@@ -128,7 +128,7 @@ def skan():
         print(DATA['image'][-100:])
         if len(DATA['image'].strip().split(',')) == 2:
             extension, file = DATA['image'].strip().split(',')
-            if extension in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
+            if extension not in ['data:image/png;base64','data:image/jpeg;base64','data:image/jpg;base64'] : 
                 msg = "Invalid file type. Submit only .jpg, .png, or .jpeg files."
                 return jsonify({"msg":msg}), 400
             padding = len(file) % 4
@@ -151,7 +151,7 @@ def skan():
         
 
         ## Image for saving
-        rice_image = cv2.cvtColor(data, cv2.COLOR_RGB2GRAY).tobytes()
+        rice_image = data.tobytes()
 
         ## Model prediction
         global model
