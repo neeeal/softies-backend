@@ -156,6 +156,7 @@ def skan():
             new_width = int((width/height)*224)
         new_size = (new_width, new_height)
         save_image = pil_image.resize(new_size)
+        image_stream = BytesIO()
         save_image.save(image_stream, format='JPEG')
         image_data = image_stream.getvalue()
         data = np.array(pil_image)
