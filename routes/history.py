@@ -76,13 +76,19 @@ def get_history_with_images():
 
         connection.ping(reconnect=True)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM `history` WHERE `user_id` = %s ORDER BY history_id DESC LIMIT 6", (user_id,))
+            cursor.execute("SELECT * FROM `history` WHERE `user_id` = %s", (user_id,))
             history_data = cursor.fetchall()
 
-            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s ORDER BY history_id DESC LIMIT 6", (user_id,))
+            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s", (user_id,))
             image_data = cursor.fetchall()
-
+        if len(history_data) < 6:
+            LIMIT = len(history_data)
+        else:
+            LIMIT = 6
+        history_data = history_data[::-1][:LIMIT]
+        image_data = image_data[::-1][:LIMIT]
         connection.commit()
+        
 
         # Combine history and image data
         history_with_images = []
@@ -93,6 +99,7 @@ def get_history_with_images():
                 'stress_id': history_entry['stress_id'],
                 'date_transaction': history_entry['date_transaction'],
                 'image_name': history_entry['image_name'],
+                'scan_num':i+1
             }
 
             # If there is corresponding image data, include it
@@ -106,7 +113,7 @@ def get_history_with_images():
                 entry['image'] = base64.b64encode(image_io.getvalue()).decode('utf-8')
 
             history_with_images.append(entry)
-            print(history_with_images)
+            # print(history_with_images)
 
         msg = 'Successfully retrieved history with images'
         return jsonify({'msg': msg, 'history_with_images': history_with_images}), 200
