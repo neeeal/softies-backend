@@ -147,6 +147,17 @@ def skan():
         image_stream = BytesIO(image_data)
         pil_image = Image.open(image_stream#.stream
                                ).convert('RGB')#.resize((300, 300))
+        width, height = pil_image.size
+        if width > height:
+            new_width = 224
+            new_height = int((height/width)*224)
+        else:
+            new_height = 224
+            new_width = int((width/height)*224)
+        new_size = (new_width, new_height)
+        save_image = pil_image.resize(new_size)
+        save_image.save(image_stream, format='JPEG')
+        image_data = image_stream.getvalue()
         data = np.array(pil_image)
         # pil_image.save("old_api/test_pil.jpeg")
         
