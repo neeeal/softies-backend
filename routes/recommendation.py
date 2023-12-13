@@ -93,11 +93,12 @@ def skan():
         if DATA['image'] == None:
             return jsonify({'msg':'Empty file passed'}),400
         ## Retrieving user_id
-        user_id = session.get('user_id')
-        if user_id == None:
-            ## currently, assign user_id to dummy user
+        # Retrieving user_id from headers
+        user_id = request.headers.get('User-Id')
+        if user_id is None:
+            # Currently, assign user_id to a dummy user
             user_id = 24
-            # return jsonify({'msg':'Please log in to skan'}), 400
+            # return jsonify({'msg': 'Please log in to skan'}), 400
         print(user_id)
         ## Prediction route accepting images and outputs prediction of A.I.
         ## Read Image from input and convert to CV2
