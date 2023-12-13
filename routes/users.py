@@ -55,7 +55,11 @@ def signup():
             if DATA['last_name'] != '': last_name = DATA['last_name']
         else: last_name=None
         if 'contact' in DATA:
-            if DATA['contact'] != '': contact = DATA['contact']
+            if DATA['contact'] != '': 
+                contact = DATA['contact']
+                ## Contact Checking
+                if len(contact) != 11: msg += "Contact must be 11 digits. "; flag = 1
+                if contact.isnumeric() == False: msg += "Contact must only contain numbers. "; flag = 1
         else: contact=None
         flag = 0 ## checker if error occured
         
@@ -70,9 +74,6 @@ def signup():
 
         ## Username Checking
         if len(username) < 3: msg += "Username must be at least 3 characters. "; flag = 1
-        
-        ## Contact Checking
-        if contact != None and len(contact) != 11: msg += "Contact must be 11 digits. "; flag = 1
         
         ## Email Checking
         if ("@" in email and "." in email.split("@")[1]) == False:
