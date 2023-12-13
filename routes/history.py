@@ -70,16 +70,13 @@ def get_history_with_images():
         if session.get("loggedin") is False:
             return jsonify({'msg': "You are not logged in"}), 400
 
-        user_id = request.headers.get('User-Id')  # Get user ID from headers
-        if not user_id:
-            return jsonify({'msg': "User ID not provided in headers"}), 400
-
+        user_id = session.get('user_id')
         connection.ping(reconnect=True)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM `history` WHERE `user_id` = %s ORDER BY history_id DESC LIMIT 6", (user_id,))
+            cursor.execute("SELECT * FROM `history` WHERE `user_id` = %s LIMIT 6", (user_id,))
             history_data = cursor.fetchall()
 
-            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s ORDER BY history_id DESC LIMIT 6", (user_id,))
+            cursor.execute("SELECT rice_image FROM history WHERE user_id = %s LIMIT 6", (user_id,))
             image_data = cursor.fetchall()
 
         connection.commit()
@@ -101,7 +98,7 @@ def get_history_with_images():
                 image_io = io.BytesIO()
                 image.save(image_io, 'JPEG')
                 image_io.seek(0)
-
+                
                 # Convert binary image data to base64-encoded string
                 entry['image'] = base64.b64encode(image_io.getvalue()).decode('utf-8')
 
