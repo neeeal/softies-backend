@@ -26,40 +26,40 @@ connection = connect(host=os.getenv("DATABASE_URL"),
                     # port=int(os.getenv("DATABASE_PORT"))
                     )
 
-@history_bp.route("/get_history", methods=["GET"])
-def get_history():
-    try:
-        if request.method == 'GET':
-            if session.get("loggedin") is False:
-                return jsonify({'msg': "You are not logged in"}), 400
+# @history_bp.route("/get_history", methods=["GET"])
+# def get_history():
+#     try:
+#         if request.method == 'GET':
+#             if session.get("loggedin") is False:
+#                 return jsonify({'msg': "You are not logged in"}), 400
 
-            user_id = session.get('user_id')
+#             user_id = session.get('user_id')
 
-            # Retrieving data from the database
-            connection.ping(reconnect=True)
-            with connection.cursor() as cursor:
-                cursor.execute(f"SELECT * FROM `history` WHERE `user_id` = {user_id}")
-                data = cursor.fetchall()
+#             # Retrieving data from the database
+#             connection.ping(reconnect=True)
+#             with connection.cursor() as cursor:
+#                 cursor.execute(f"SELECT * FROM `history` WHERE `user_id` = {user_id}")
+#                 data = cursor.fetchall()
 
-            if not data:
-                return jsonify({'msg': 'No history found for the user'}), 404
+#             if not data:
+#                 return jsonify({'msg': 'No history found for the user'}), 404
 
-            # Formatting retrieved data
-            history = {str(i): {
-                'history_id': data[i]['history_id'],
-                'user_id': data[i]['user_id'],
-                'stress_id': data[i]['stress_id'],
-                'date_transaction': data[i]['date_transaction'],
-                'image_name': data[i]['image_name']
-            } for i in range(len(data))}
+#             # Formatting retrieved data
+#             history = {str(i): {
+#                 'history_id': data[i]['history_id'],
+#                 'user_id': data[i]['user_id'],
+#                 'stress_id': data[i]['stress_id'],
+#                 'date_transaction': data[i]['date_transaction'],
+#                 'image_name': data[i]['image_name']
+#             } for i in range(len(data))}
 
-            msg = 'Successfully retrieved history'
-            return jsonify({'msg': msg, 'history': history}), 200
+#             msg = 'Successfully retrieved history'
+#             return jsonify({'msg': msg, 'history': history}), 200
 
-        msg = 'Invalid request'
-        return jsonify({'msg': msg}), 400
-    except Exception as e:
-        return str(e), 500
+#         msg = 'Invalid request'
+#         return jsonify({'msg': msg}), 400
+#     except Exception as e:
+#         return str(e), 500
 
 ## get all history entries (might only get 6)
 @history_bp.route("/get_history_with_images", methods=["GET"])
